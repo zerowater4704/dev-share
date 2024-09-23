@@ -1,5 +1,12 @@
+import Header from '../components/Header'
+
 const page = () => {
-  return <div>page</div>
+  return (
+    <>
+      <Header />
+      <div>page</div>
+    </>
+  )
 }
 
 export default page
