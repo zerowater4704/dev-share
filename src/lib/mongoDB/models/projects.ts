@@ -1,6 +1,17 @@
 import mongoose, { Schema } from 'mongoose'
 
-const projectSchema = new Schema({
+interface ProjectType {
+  title: string
+  projectImage: string
+  duration: string
+  link: string
+  language: string[]
+  rating: mongoose.Schema.Types.ObjectId[]
+  comments: mongoose.Schema.Types.ObjectId[]
+  addedBy: mongoose.Schema.Types.ObjectId
+}
+
+const projectSchema = new Schema<ProjectType>({
   title: {
     type: String,
     required: true,
@@ -39,4 +50,5 @@ const projectSchema = new Schema({
   },
 })
 
-export default mongoose.model('Project', projectSchema)
+export const ProjectModel =
+  mongoose.model('Project', projectSchema) || mongoose.model('Project', projectSchema)
