@@ -1,20 +1,18 @@
-"use client"; 
+'use client'
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import Header from '../components/Header';
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 const Page = () => {
-  const [projects, setProjects] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([])
 
   useEffect(() => {
-    const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]');
-    setProjects(existingProjects);
-  }, []);
+    const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]')
+    setProjects(existingProjects)
+  }, [])
 
   return (
     <>
-      <Header />
       <div className="container mx-auto p-4">
         <div className="flex justify-between mb-4">
           <h1 className="text-xl font-bold">プロジェクト管理</h1>
@@ -28,7 +26,12 @@ const Page = () => {
               <div className="font-bold text-lg">{project.title}</div>
               <div className="mt-2">開発言語: {project.language.join(', ')}</div>
               <div className="mt-2">開発期間: {project.duration}</div>
-              <div className="mt-2">アプリのリンク: <a href={project.link} target="_blank" rel="noopener noreferrer">{project.link}</a></div>
+              <div className="mt-2">
+                アプリのリンク:{' '}
+                <a href={project.link} target="_blank" rel="noopener noreferrer">
+                  {project.link}
+                </a>
+              </div>
             </div>
           ))}
         </div>
@@ -38,7 +41,7 @@ const Page = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Page;
+export default Page
