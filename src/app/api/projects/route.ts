@@ -44,3 +44,35 @@ export async function POST(req: Request) {
     })
   }
 }
+
+export async function GET() {
+  await connectDB()
+
+  try {
+    const projects = await ProjectModel.find()
+
+    if (!projects || projects.length === 0) {
+      return new Response(JSON.stringify({ error: 'プロジェクトがありません。' }), {
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      })
+    }
+    return new Response(JSON.stringify({ projects }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch (error) {
+    return new Response(JSON.stringify({ error }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
+  }
+}
