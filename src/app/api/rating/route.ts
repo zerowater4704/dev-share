@@ -1,95 +1,62 @@
 import { ProjectModel } from '@/lib/mongoDB/models/projects'
-import connectDB from '@/lib/mongoDB/mongoDB'
+import { ratingsModel } from '@/lib/mongoDB/models/ratings'
 
-export async function PUT(req: Request) {
+import connectDB from '@/lib/mongoDB/mongoDB'
+import type mongoose from 'mongoose'
+
+export async function POST(req: Request) {
   await connectDB()
   const body = await req.json()
-  const projectId = body.projectId
-  const newRating = body.newRating
 
   try {
-    if (!projectId) {
-      return new Response(JSON.stringify({ error: 'Project ID is required' }), {
-        status: 400, // Bad Request
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-    }
+    // 新しい評価を作成
+    const newRating = new ratingsModel({
+      addedBy: body.addedBy,
+      rating: body.rating,
+    })
 
-    // ProjectのIDで検索し、ratingフィールドに新しい評価を追加
-    const res = await ProjectModel.findOneAndUpdate(
-      { _id: projectId }, // 検索クエリ: projectIdで検索
-      { $push: { rating: newRating } }, // rating配列に新しい評価を追加
-      { new: true }, // 更新後のデータを返す
-    )
+    await newRating.save()
 
-    if (!res) {
-      return new Response(JSON.stringify({ error: 'Project not found' }), {
+    // プロジェクトの取得
+    const project = await ProjectModel.findById(body.project)
+
+    // プロジェクトが見つからない場合
+    if (!project) {
+      return new Response(JSON.stringify({ message: 'プロジェクトが見つかりません。' }), {
         status: 404,
         headers: {
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
       })
     }
 
-    // 成功時のレスポンス
+    // 評価IDをプロジェクトに追加
+    project.rating.push(newRating._id as unknown as mongoose.Schema.Types.ObjectId)
+    await project.save()
+
+    // 成功レスポンス
+    return new Response(JSON.stringify({ message: '評価が追加されました。', newRating }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch (error) {
+    console.error('エラー:', error) // ログにエラーを記録
+
+    // エラーレスポンス
     return new Response(
-      JSON.stringify({ message: 'Success: Data added successfully', data: res }),
+      JSON.stringify({
+        message: 'サーバーエラーが発生しました。後でもう一度お試しください。',
+      }),
       {
-        status: 200,
+        status: 500,
         headers: {
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
       },
     )
-  } catch (error) {
-    // エラーハンドリング
-    return new Response(JSON.stringify({ error }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
   }
 }
-
-// export async function DELETE(req: Request) {
-//   await connectDB()
-//   const url = new URL(req.url)
-//   const projectId = url.searchParams.get('id')
-//   const rateId = url.searchParams.get('rateId')
-
-//   try {
-//     const res = await ProjectModel.findByIdAndUpdate(
-//       projectId,
-//       {
-//         $pull: { rating: { _id: rateId } },
-//       },
-//       { new: true }
-//     );
-
-//     if (!res) {
-//       return new Response(JSON.stringify({ error: 'Post not found' }), {
-//         status: 404,
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       })
-//     }
-
-//     return new Response('Success: Data added successfully', {
-//       status: 200,
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     })
-//   } catch (error) {
-//     return new Response(JSON.stringify({ error }), {
-//       status: 500,
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     })
-//   }
-// }

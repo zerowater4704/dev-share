@@ -1,15 +1,15 @@
-import comments from '@/lib/mongoDB/models/comments'
+import { CommentsModel } from '@/lib/mongoDB/models/comments'
 import { ProjectModel } from '@/lib/mongoDB/models/projects'
 import connectDB from '@/lib/mongoDB/mongoDB'
 
-import mongoose from 'mongoose'
+import type mongoose from 'mongoose'
 
 export async function POST(req: Request) {
   await connectDB()
   const body = await req.json()
 
   try {
-    const newComment = new comments({
+    const newComment = new CommentsModel({
       addedBy: body.addedBy,
       project: body.project,
       comment: body.comment,
@@ -54,7 +54,7 @@ export async function GET(req: Request) {
   const body = await req.json()
 
   try {
-    const allComment = await comments.find({ project: body.project })
+    const allComment = await CommentsModel.find({ project: body.project })
 
     if (!allComment) {
       return new Response(JSON.stringify({ message: 'コメントが見つかりません。' }), {
@@ -88,7 +88,7 @@ export async function PUT(req: Request) {
   const body = await req.json()
 
   try {
-    const comment = await comments.findByIdAndUpdate(body._id, { $set: body }, { new: true })
+    const comment = await CommentsModel.findByIdAndUpdate(body._id, { $set: body }, { new: true })
 
     if (!comment) {
       return new Response(JSON.stringify({ message: 'コメントが見つかりません。' }), {
@@ -135,7 +135,7 @@ export async function DELETE(req: Request) {
   }
 
   try {
-    const comment = await comments.findByIdAndDelete(id)
+    const comment = await CommentsModel.findByIdAndDelete(id)
 
     if (!comment) {
       return new Response(JSON.stringify({ message: 'コメントが見つかりません。' }), {
