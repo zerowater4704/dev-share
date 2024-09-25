@@ -1,0 +1,169 @@
+import comments from '@/lib/mongoDB/models/comments'
+import { ProjectModel } from '@/lib/mongoDB/models/projects'
+import connectDB from '@/lib/mongoDB/mongoDB'
+
+import mongoose from 'mongoose'
+
+export async function POST(req: Request) {
+  await connectDB()
+  const body = await req.json()
+
+  try {
+    const newComment = new comments({
+      addedBy: body.addedBy,
+      project: body.project,
+      comment: body.comment,
+    })
+
+    await newComment.save()
+
+    const project = await ProjectModel.findById(body.project)
+
+    if (!project) {
+      return new Response(JSON.stringify({ message: 'プロジェクトが見つかりません。' }), {
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      })
+    }
+
+    project.comments.push(newComment._id as mongoose.Schema.Types.ObjectId)
+    await project.save()
+
+    return new Response(JSON.stringify({ message: 'コメントが作成されました。', newComment }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch (error) {
+    return new Response(JSON.stringify({ message: 'コメント作成に失敗しました。' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
+  }
+}
+
+export async function GET(req: Request) {
+  await connectDB()
+  const body = await req.json()
+
+  try {
+    const allComment = await comments.find({ project: body.project })
+
+    if (!allComment) {
+      return new Response(JSON.stringify({ message: 'コメントが見つかりません。' }), {
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      })
+    }
+
+    return new Response(JSON.stringify({ message: 'コメント取得に成功しました。', allComment }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch (error) {
+    return new Response(JSON.stringify({ message: 'コメント取得に失敗しました。' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
+  }
+}
+
+export async function PUT(req: Request) {
+  await connectDB()
+  const body = await req.json()
+
+  try {
+    const comment = await comments.findByIdAndUpdate(body._id, { $set: body }, { new: true })
+
+    if (!comment) {
+      return new Response(JSON.stringify({ message: 'コメントが見つかりません。' }), {
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Methods': 'PUT',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      })
+    }
+
+    return new Response(JSON.stringify({ message: 'コメントが更新されました。', comment }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch (error) {
+    return new Response(JSON.stringify({ message: 'コメント更新に失敗しました。' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'PUT',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
+  }
+}
+
+export async function DELETE(req: Request) {
+  await connectDB()
+
+  const url = new URL(req.url)
+  const id = url.searchParams.get('id')
+
+  if (!id) {
+    return new Response(JSON.stringify({ message: 'コメントが見つかりません。' }), {
+      status: 404,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'DELETE',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
+  }
+
+  try {
+    const comment = await comments.findByIdAndDelete(id)
+
+    if (!comment) {
+      return new Response(JSON.stringify({ message: 'コメントが見つかりません。' }), {
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Methods': 'DELETE',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      })
+    }
+
+    return new Response(JSON.stringify({ message: 'コメントが削除されました。' }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'DELETE',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
+  } catch (error) {
+    return new Response(JSON.stringify({ message: 'コメント削除に失敗しました。' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'DELETE',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
+  }
+}

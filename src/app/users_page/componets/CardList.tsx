@@ -44,12 +44,11 @@ const CardList = () => {
   return (
     <ul className="mx-auto mt-10 grid w-11/12 grid-cols-3 gap-5">
       {dummys.map((dummy, index) => (
-        // eslint-disable-next-line react/jsx-key
-        <div className="size-auto">
+        <div key={dummy.id} className="size-auto">
           {flipCardId === dummy.id ? (
-            <CardBack key={index} dummy={dummy} setFlip={setFlip} setFlipCardId={setFlipCardId} />
+            <CardBack dummy={dummy} setFlip={setFlip} setFlipCardId={setFlipCardId} />
           ) : (
-            <CardFront key={index} dummy={dummy} setFlip={setFlip} setFlipCardId={setFlipCardId} />
+            <CardFront dummy={dummy} setFlip={setFlip} setFlipCardId={setFlipCardId} />
           )}
         </div>
       ))}
