@@ -14,7 +14,7 @@ interface UserType {
 
 const userSchema = new Schema<UserType>({
   userName: { type: String, required: true },
-  userImage: { type: String, required: true },
+  userImage: { type: String },
   email: { type: String, required: true, uniqued: true },
   password: { type: String, required: true, uniqued: true },
   school: { type: String },
