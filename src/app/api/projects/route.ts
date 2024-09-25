@@ -9,6 +9,7 @@ export async function POST(req: Request) {
     const newProject = new ProjectModel({
       title: body.title,
       projectImage: body.projectImage,
+      duration: body.duration,
       link: body.link,
       language: body.language, // ここは文字列の配列を期待しています
       rating: body.rating,
@@ -82,7 +83,7 @@ export async function PUT(req: Request) {
   const body = await req.json()
 
   try {
-    const project = await ProjectModel.findByIdAndUpdate(body.id, { $set: body }, { new: true })
+    const project = await ProjectModel.findByIdAndUpdate(body._id, { $set: body }, { new: true })
 
     if (!project) {
       return new Response(JSON.stringify({ error: 'プロジェクトが見つかりません。' }), {
