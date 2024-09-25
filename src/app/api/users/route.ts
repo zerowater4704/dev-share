@@ -1,17 +1,20 @@
 import { userModel } from '@/lib/mongoDB/models/user'
 import connectDB from '@/lib/mongoDB/mongoDB'
+import bcrypt from 'bcrypt'
 
 export async function POST(req: Request) {
   await connectDB()
   const body = await req.json()
 
   try {
+    const hashedPassword = await bcrypt.hash(body.password, 10)
+
     const newUser = new userModel({
       userName: body.userName,
       userImage: body.userImage,
       email: body.email,
-      password: body.password,
-      school: body.scholl,
+      password: hashedPassword,
+      school: body.school,
       languages: body.languages,
       position: body.position,
       githubAccount: body.githubAccount,
@@ -87,6 +90,11 @@ export async function PUT(req: Request) {
   const id = body._id
 
   try {
+    if (body.password) {
+      const hashedPassword = await bcrypt.hash(body.password, 10)
+      body.password = hashedPassword
+    }
+
     const updateUser = await userModel.findByIdAndUpdate(
       { _id: id },
       {
