@@ -1,15 +1,14 @@
 import Link from 'next/link'
 import type { Dispatch, SetStateAction } from 'react'
-import type { dummysType } from './CardList'
 
 const CardBack = ({
-  dummy,
+  user,
   setFlip,
   setFlipCardId,
 }: {
-  dummy: dummysType
+  user: UserType
   setFlip: Dispatch<SetStateAction<boolean>>
-  setFlipCardId: Dispatch<SetStateAction<number | null>>
+  setFlipCardId: Dispatch<SetStateAction<string | null>>
 }) => {
   const flipToggle = () => {
     setFlipCardId(null)

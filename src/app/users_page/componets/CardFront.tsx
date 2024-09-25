@@ -1,41 +1,48 @@
 import Link from 'next/link'
 import type { Dispatch, SetStateAction } from 'react'
-import type { dummysType } from './CardList'
 
 const CardFront = ({
-  dummy,
+  user,
   setFlip,
   setFlipCardId,
 }: {
-  dummy: dummysType
+  user: UserType
   setFlip: Dispatch<SetStateAction<boolean>>
-  setFlipCardId: Dispatch<SetStateAction<number | null>>
+  setFlipCardId: Dispatch<SetStateAction<string | null>>
 }) => {
-  const flipToggle = (id: number) => {
+  const flipToggle = (id: string) => {
     setFlipCardId(id)
   }
 
   return (
-    <div className=" h-[350px] w-auto rounded-xl bg-gray-200 p-3">
+    <div className=" relative h-[350px] w-auto rounded-xl bg-gray-200 p-3">
       <div className="flex w-full flex-col gap-3">
-        <div className="flex items-center">
+        <div className="flex items-center ">
           <h1 className="flex-1 border-l-4 border-purple-700 pl-2 font-bold">
-            {dummy?.name as string}
+            {user?.userName as string}
           </h1>
           <div className="flex gap-2">
-            <button className="w-[70px] rounded-md bg-black p-1 text-white">github</button>
-            <button className="w-[70px] rounded-md bg-purple-700 p-1 text-white">X</button>
+            <Link href={`${user.githubAccount}`}>
+              <button className="w-[70px] rounded-md bg-black p-1 text-white">github</button>
+            </Link>
+            <Link href={`${user?.xAccount}`}>
+              <button className="w-[70px] rounded-md bg-purple-700 p-1 text-white">X</button>
+            </Link>
           </div>
         </div>
         <div className="w-ful h-36 rounded-md bg-gray-400 text-center">image</div>
 
         <ul className="flex flex-col gap-1">
-          <li className="border-l-2 border-purple-700 pl-2">所属：ハーバード大学</li>
-          <li className="border-l-2 border-purple-700 pl-2">好きな技術：javascript</li>
-          <li className="border-l-2 border-purple-700 pl-2">ポジション：フロントエンド</li>
+          <li className="border-l-2 border-purple-700 pl-2">{user?.school}</li>
+          <li className="border-l-2 border-purple-700 pl-2">
+            好きな技術：{user.languages.join(',')}
+          </li>
+          <li className="border-l-2 border-purple-700 pl-2">
+            ポジション：{user.position.join(',')}
+          </li>
         </ul>
 
-        <div className="flex gap-2">
+        <div className="absolute inset-x-0 bottom-3 mx-auto flex w-full gap-2 px-2">
           <Link
             href="/projects_page"
             className="w-1/2 rounded-md bg-black p-1 text-center text-white"
@@ -44,7 +51,7 @@ const CardFront = ({
           </Link>
           <button
             className="w-1/2 rounded-md bg-purple-700 p-1 text-white"
-            onClick={() => flipToggle(dummy.id)}
+            onClick={() => flipToggle(user._id)}
           >
             Flip
           </button>
