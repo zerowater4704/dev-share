@@ -76,3 +76,83 @@ export async function GET() {
     })
   }
 }
+
+export async function PUT(req: Request) {
+  await connectDB()
+  const body = await req.json()
+
+  try {
+    const project = await ProjectModel.findByIdAndUpdate(body.id, body, { new: true })
+
+    if (!project) {
+      return new Response(JSON.stringify({ error: 'プロジェクトが見つかりません。' }), {
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Methods': 'PUT',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      })
+    }
+    return new Response(JSON.stringify({ message: 'プロジェクトが更新されました。', project }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch (error) {
+    return new Response(JSON.stringify({ error }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'PUT',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
+  }
+}
+
+export async function DELETE(req: Request) {
+  await connectDB()
+
+  const url = new URL(req.url)
+  const id = url.searchParams.get('id')
+
+  if (!id) {
+    return new Response(JSON.stringify({ error: 'IDが見つかりません。' }), {
+      status: 404,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'DELETE',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
+  }
+
+  try {
+    const project = await ProjectModel.findByIdAndDelete(id)
+
+    if (!project) {
+      return new Response(JSON.stringify({ error: 'プロジェクトが見つかりません。' }), {
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Methods': 'DELETE',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      })
+    }
+
+    return new Response(JSON.stringify({ message: 'プロジェクトが削除されました。' }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch (error) {
+    return new Response(JSON.stringify({ error }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'DELETE',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
+  }
+}
