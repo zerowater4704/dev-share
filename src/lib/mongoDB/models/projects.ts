@@ -50,5 +50,4 @@ const projectSchema = new Schema<ProjectType>({
   },
 })
 
-export const ProjectModel =
-  mongoose.model('Project', projectSchema) || mongoose.model('Project', projectSchema)
+export const ProjectModel = mongoose.models.Project || mongoose.model('Project', projectSchema)

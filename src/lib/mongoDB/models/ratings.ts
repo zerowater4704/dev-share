@@ -14,4 +14,4 @@ const ratingSchema = new Schema({
   },
 })
 
-export default mongoose.model('Rating', ratingSchema)
+export const ratingsModel = mongoose.models.Rating || mongoose.model('Rating', ratingSchema)
