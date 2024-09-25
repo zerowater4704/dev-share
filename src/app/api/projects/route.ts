@@ -82,7 +82,7 @@ export async function PUT(req: Request) {
   const body = await req.json()
 
   try {
-    const project = await ProjectModel.findByIdAndUpdate(body.id, body, { new: true })
+    const project = await ProjectModel.findByIdAndUpdate(body.id, { $set: body }, { new: true })
 
     if (!project) {
       return new Response(JSON.stringify({ error: 'プロジェクトが見つかりません。' }), {
