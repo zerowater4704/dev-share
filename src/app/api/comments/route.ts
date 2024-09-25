@@ -51,10 +51,22 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   await connectDB()
-  const body = await req.json()
+  const { searchParams } = new URL(req.url)
+  const project = searchParams.get('project')
+
+  if (!project) {
+    return new Response(JSON.stringify({ message: 'プロジェクトIDが指定されていません。' }), {
+      status: 400,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
+  }
 
   try {
-    const allComment = await CommentsModel.find({ project: body.project })
+    const allComment = await CommentsModel.find({ project })
 
     if (!allComment) {
       return new Response(JSON.stringify({ message: 'コメントが見つかりません。' }), {
