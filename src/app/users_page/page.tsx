@@ -1,20 +1,26 @@
 import CardList from './componets/CardList'
 
 const page = async () => {
-  // const fetchMongo = async () => {
-  //   const res = await fetch("http://localhost:3000/api/projects", {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     cache: 'no-store',
-  //   })
+  const apiurl = 'http://localhost:3000'
 
-  //   return res
-  // }
+  const getDatas = async () => {
+    const res = await fetch(`${apiurl}/api/users`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-store',
+    })
 
-  // const data = await fetchMongo()
-  // console.log(data)
+    if (!res.ok) {
+      return 'failed fetch'
+    }
+
+    const response = await res.json() // JSONとしてレスポンスを処理
+    return response
+  }
+
+  const userData = (await getDatas()) as unknown[]
 
   return (
     <div className="size-full">
