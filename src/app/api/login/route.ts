@@ -1,6 +1,7 @@
 import { userModel } from '@/lib/mongoDB/models/user'
 import connectDB from '@/lib/mongoDB/mongoDB'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 export async function POST(req: Request) {
   await connectDB()
@@ -30,10 +31,19 @@ export async function POST(req: Request) {
       })
     }
 
-    return new Response(JSON.stringify({ message: 'ログイン成功', user }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
+    const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET as string, {
+      expiresIn: '1h',
     })
+
+    const { password: _, ...userWithoutPassword } = user.toObject()
+
+    return new Response(
+      JSON.stringify({ message: 'ログイン成功', token, user: userWithoutPassword }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    )
   } catch (error) {
     console.error('Error logging in:', error)
     return new Response(JSON.stringify({ error: 'ログイン処理に失敗しました' }), {

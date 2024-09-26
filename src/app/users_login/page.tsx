@@ -27,6 +27,12 @@ const Login = () => {
       return
     }
 
+    const data = await res.json()
+
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('userId', data.user._id)
+    localStorage.setItem('userName', data.user.userName)
+    console.log(data)
     router.push('/')
   }
 

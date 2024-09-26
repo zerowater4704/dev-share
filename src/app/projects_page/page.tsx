@@ -5,10 +5,42 @@ import { useEffect, useState } from 'react'
 
 const Page = () => {
   const [projects, setProjects] = useState<any[]>([])
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]')
-    setProjects(existingProjects)
+    const fetchProjects = async () => {
+      const token = localStorage.getItem('token')
+      console.log(token)
+      if (!token) {
+        setErrorMessage('ログインしてください')
+        return
+      }
+
+      try {
+        const res = await fetch('/api/project', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        console.log('Response status:', res.status)
+
+        if (!res.ok) {
+          const errorData = await res.json()
+          console.error('Error data:', errorData)
+          setErrorMessage(errorData.error)
+          return
+        }
+
+        const data = await res.json()
+        setProjects(data.projects)
+      } catch (error) {
+        console.error(error)
+        setErrorMessage('エラーが発生しました')
+      }
+    }
+
+    fetchProjects()
   }, [])
 
   return (
@@ -20,6 +52,7 @@ const Page = () => {
             <button className="bg-blue-500 text-white px-4 py-2 rounded">追加</button>
           </Link>
         </div>
+        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {projects.map((project, index) => (
             <div key={index} className="border rounded p-4 bg-white shadow">
