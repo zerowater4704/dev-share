@@ -12,9 +12,9 @@ const page = async () => {
       cache: 'no-store',
     })
 
-    if (!user.ok) {
-      return 'failed fetch'
-    }
+    // if (!user.ok) {
+    //   return 'failed fetch'
+    // }
 
     const response = await user.json() // JSONとしてレスポンスを処理
 

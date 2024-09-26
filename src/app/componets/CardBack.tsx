@@ -25,12 +25,12 @@ const CardBack = ({
                 Todoアプリ
               </span>
               <div className="flex gap-1">
-                <Link href="/users_page">
+                <Link href="/">
                   <button className="w-16 rounded-full bg-black p-1 text-sm text-white">
                     GitHub
                   </button>
                 </Link>
-                <Link href="/users_page">
+                <Link href="/">
                   <button className="w-16 rounded-full bg-purple-700 p-1 text-sm text-white">
                     App
                   </button>
@@ -46,12 +46,12 @@ const CardBack = ({
                 Todoアプリ
               </span>
               <div className="flex gap-1">
-                <Link href="/users_page">
+                <Link href="/">
                   <button className="w-16 rounded-full bg-black p-1 text-sm text-white">
                     GitHub
                   </button>
                 </Link>
-                <Link href="/users_page">
+                <Link href="/">
                   <button className="w-16 rounded-full bg-purple-700 p-1 text-sm text-white">
                     App
                   </button>
@@ -67,12 +67,12 @@ const CardBack = ({
                 Todoアプリ
               </span>
               <div className="flex gap-1">
-                <Link href="/users_page">
+                <Link href="/">
                   <button className="w-16 rounded-full bg-black p-1 text-sm text-white">
                     GitHub
                   </button>
                 </Link>
-                <Link href="/users_page">
+                <Link href="/">
                   <button className="w-16 rounded-full bg-purple-700 p-1 text-sm text-white">
                     App
                   </button>
