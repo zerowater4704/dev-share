@@ -68,7 +68,7 @@ export async function GET(req: Request) {
       })
     }
 
-    return new Response(JSON.stringify({ message: 'Post updated successfully', allUser }), {
+    return new Response(JSON.stringify(allUser), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })
