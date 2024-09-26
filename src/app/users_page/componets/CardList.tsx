@@ -3,52 +3,19 @@ import { useState } from 'react'
 import CardBack from './CardBack'
 import CardFront from './CardFront'
 
-export interface dummysType {
-  id: number
-  name: string
-  languages: string
-}
-
-const dummys = [
-  {
-    id: 1,
-    name: 'user1',
-    languages: 'javascript',
-  },
-  {
-    id: 2,
-    name: 'user2',
-    languages: 'java',
-  },
-  {
-    id: 3,
-    name: 'user3',
-    languages: 'python',
-  },
-  {
-    id: 4,
-    name: 'user4',
-    languages: 'typescript',
-  },
-  {
-    id: 5,
-    name: 'user5',
-    languages: 'ruby',
-  },
-] as dummysType[]
-
-const CardList = () => {
+const CardList = ({ usersData }: { usersData: UserType[] }) => {
   const [flip, setFlip] = useState<boolean>(false)
-  const [flipCardId, setFlipCardId] = useState<number | null>(null)
+  const [flipCardId, setFlipCardId] = useState<string | null>(null)
+  console.log(usersData)
 
   return (
     <ul className="mx-auto mt-10 grid w-11/12 grid-cols-3 gap-5">
-      {dummys.map((dummy, index) => (
-        <div key={dummy.id} className="size-auto">
-          {flipCardId === dummy.id ? (
-            <CardBack dummy={dummy} setFlip={setFlip} setFlipCardId={setFlipCardId} />
+      {usersData.map((user) => (
+        <div key={user?._id} className="size-auto">
+          {flipCardId === user?._id ? (
+            <CardBack user={user} setFlip={setFlip} setFlipCardId={setFlipCardId} />
           ) : (
-            <CardFront dummy={dummy} setFlip={setFlip} setFlipCardId={setFlipCardId} />
+            <CardFront user={user} setFlip={setFlip} setFlipCardId={setFlipCardId} />
           )}
         </div>
       ))}

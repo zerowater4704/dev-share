@@ -4,7 +4,7 @@ const page = async () => {
   const apiurl = 'http://localhost:3000'
 
   const getDatas = async () => {
-    const res = await fetch(`${apiurl}/api/users`, {
+    const user = await fetch(`${apiurl}/api/users`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -12,19 +12,20 @@ const page = async () => {
       cache: 'no-store',
     })
 
-    if (!res.ok) {
+    if (!user.ok) {
       return 'failed fetch'
     }
 
-    const response = await res.json() // JSONとしてレスポンスを処理
+    const response = await user.json() // JSONとしてレスポンスを処理
+
     return response
   }
 
-  const userData = (await getDatas()) as unknown[]
+  const userData = (await getDatas()) as UserType[]
 
   return (
     <div className="size-full">
-      <CardList />
+      <CardList usersData={userData} />
     </div>
   )
 }
