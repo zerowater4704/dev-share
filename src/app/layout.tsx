@@ -1,8 +1,7 @@
 // src/app/layout.tsx (サーバーコンポーネント)
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
-import ClientLayout from './components/ClientLayout'
-import Header from './components/Header'
+import ClientLayout from './components/ClientLayout' // クライアントコンポーネント
 import './globals.css'
 
 const geistSans = localFont({
@@ -25,8 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Header />
-
+        {/* ClientLayout 内で Header を扱う */}
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

@@ -1,18 +1,29 @@
 // src/app/components/ClientLayout.tsx (クライアントコンポーネント)
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import Header from './Header'
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
-    // const isAuthenticated = false // 認証状態の確認ロジック
-    //  if (!isAuthenticated) {
-    router.push('/users_login') // 認証されていない場合はログインページにリダイレクト
-    //}
+    // 認証されていない場合はログインページにリダイレクトするロジック
+    const isAuthenticated = false // 認証状態の確認ロジック (一時的な値)
+    if (!isAuthenticated) {
+      router.push('/users_login')
+    }
   }, [router])
 
-  return <>{children}</>
+  // `/users_login` または `/users_register` ページではヘッダーを非表示にするロジック
+  const shouldShowHeader = pathname !== '/users_login' && pathname !== '/users_register'
+
+  return (
+    <>
+      {shouldShowHeader && <Header />}
+      {children}
+    </>
+  )
 }
