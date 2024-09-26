@@ -20,7 +20,7 @@ const Header = () => {
             href="/users_login"
             className=" text-white hover:text-purple-300 px-4 py-2 rounded-md"
           >
-            ログイン
+            ログアウト
           </Link>
         </div>
       </header>

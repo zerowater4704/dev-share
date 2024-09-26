@@ -22,11 +22,12 @@ const Login = () => {
 
     if (!res.ok) {
       const errorData = await res.json()
+      console.log(errorData)
       setErrorMessage(errorData.error)
       return
     }
 
-    router.push('/users_page')
+    router.push('/')
   }
 
   return (
@@ -57,6 +58,7 @@ const Login = () => {
               className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
+
           <button
             type="submit"
             className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 w-full"
