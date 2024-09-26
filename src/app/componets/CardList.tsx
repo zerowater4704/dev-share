@@ -3,7 +3,7 @@ import { useState } from 'react'
 import CardBack from './CardBack'
 import CardFront from './CardFront'
 
-const CardList = ({ usersData }: { usersData: UserType[] }) => {
+const CardList = ({ usersData }: { usersData: UserAndProjectDataType[] }) => {
   const [flip, setFlip] = useState<boolean>(false)
   const [flipCardId, setFlipCardId] = useState<string | null>(null)
   console.log(usersData)
