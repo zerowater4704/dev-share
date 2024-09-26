@@ -1,18 +1,15 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useReducer } from 'react'
+import {
+  initialState,
+  LoginFormStateType,
+  UserFormReducer,
+} from '../state/reducer/FormInpurReducer'
 
 const Register = () => {
-  const [userName, setUserName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [school, setSchool] = useState('')
-  const [languages, setLanguages] = useState('')
-  const [githubAccount, setGithubAccount] = useState('')
-  const [xAccount, setXAccount] = useState('')
-  const [userImage, setUserImage] = useState('')
-  const [errorMessage, setErrorMessage] = useState<string | null>(null) // 型をstring | nullに設定
+  const [state, dispatch] = useReducer(UserFormReducer, initialState)
   const router = useRouter()
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -24,16 +21,7 @@ const Register = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          userName,
-          userImage,
-          email,
-          password,
-          school,
-          languages,
-          githubAccount,
-          xAccount,
-        }),
+        body: JSON.stringify(state),
       })
 
       if (!res.ok) {
@@ -41,104 +29,86 @@ const Register = () => {
         throw new Error(errorData.message || '登録に失敗しました。')
       }
 
-      router.push('/users_login') // 登録後にログインページへリダイレクト
+      router.push('/users_login')
     } catch (err) {
-      const error = err as Error // エラーをError型にキャスト
+      const error = err as Error
       console.error('エラー:', error)
-      setErrorMessage(error.message) // エラーメッセージを設定
+      dispatch({ type: 'SET_DATA', name: 'errorMessage', value: error.message }) // エラーメッセージを設定
     }
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
+        {state.errorMessage && <p className="text-red-500 text-center">{state.errorMessage}</p>}
         <h2 className="text-2xl text-black font-bold mb-4 text-center">会員登録</h2>
         <form className="space-y-4" onSubmit={handleRegister}>
           {/* フォームフィールド */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">UserName:</label>
-            <input
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder="username"
-              required
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">メールアドレス:</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="email"
-              required
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">パスワード:</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="password"
-              required
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">学校:</label>
-            <input
-              type="text"
-              value={school}
-              onChange={(e) => setSchool(e.target.value)}
-              placeholder="学校"
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">希望エンジニア:</label>
-            <input
-              type="text"
-              value={languages}
-              onChange={(e) => setLanguages(e.target.value)}
-              placeholder="例: バックエンド, フロントエンド"
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">イメージ:</label>
-            <input
-              type="text"
-              value={userImage}
-              onChange={(e) => setUserImage(e.target.value)}
-              placeholder="イメージ"
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">GitHub:</label>
-            <input
-              type="text"
-              value={githubAccount}
-              onChange={(e) => setGithubAccount(e.target.value)}
-              placeholder="GitHub アカウント"
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">X:</label>
-            <input
-              type="text"
-              value={xAccount}
-              onChange={(e) => setXAccount(e.target.value)}
-              placeholder="X アカウント"
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
+          {[
+            {
+              label: 'UserName',
+              type: 'text',
+              field: 'userName' as keyof LoginFormStateType,
+              placeholder: 'username',
+              required: true,
+            },
+            {
+              label: 'メールアドレス',
+              type: 'email',
+              field: 'email' as keyof LoginFormStateType,
+              placeholder: 'email',
+              required: true,
+            },
+            {
+              label: 'パスワード',
+              type: 'password',
+              field: 'password' as keyof LoginFormStateType,
+              placeholder: 'password',
+              required: true,
+            },
+            {
+              label: '学校',
+              type: 'text',
+              field: 'school' as keyof LoginFormStateType,
+              placeholder: '学校',
+            },
+            {
+              label: '希望エンジニア',
+              type: 'text',
+              field: 'languages' as keyof LoginFormStateType,
+              placeholder: '例: バックエンド, フロントエンド',
+            },
+            {
+              label: 'イメージ',
+              type: 'text',
+              field: 'userImage' as keyof LoginFormStateType,
+              placeholder: 'イメージ',
+            },
+            {
+              label: 'GitHub',
+              type: 'text',
+              field: 'githubAccount' as keyof LoginFormStateType,
+              placeholder: 'GitHub アカウント',
+            },
+            {
+              label: 'X',
+              type: 'text',
+              field: 'xAccount' as keyof LoginFormStateType,
+              placeholder: 'X アカウント',
+            },
+          ].map(({ label, type, field, placeholder, required }) => (
+            <div key={field}>
+              <label className="block text-sm font-medium text-gray-700">{label}:</label>
+              <input
+                type={type}
+                value={state[field] || ''} // null の場合は空文字列を設定
+                onChange={(e) => dispatch({ type: 'SET_DATA', name: field, value: e.target.value })} // リデューサーを使用してフィールドを更新
+                placeholder={placeholder}
+                required={required}
+                className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+          ))}
           <button
             type="submit"
             className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 w-full"
@@ -157,5 +127,4 @@ const Register = () => {
     </div>
   )
 }
-
 export default Register
