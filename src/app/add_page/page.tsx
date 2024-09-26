@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const AddPage = () => {
   const router = useRouter()
@@ -9,19 +9,78 @@ const AddPage = () => {
   const [language, setLanguage] = useState<string[]>([])
   const [duration, setDuration] = useState('')
   const [link, setLink] = useState('')
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [userName, setUserName] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    // ログイン時に保存されたユーザー情報を取得
+    const storedUserId = localStorage.getItem('userId')
+    const storedUserName = localStorage.getItem('userName')
+
+    console.log('storedUserId:', storedUserId) // デバッグ用ログ
+    console.log('storedUserName:', storedUserName) // デバッグ用ログ
+
+    if (storedUserId) setUserId(storedUserId)
+    if (storedUserName) setUserName(storedUserName)
+  }, [])
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const newProject = { title, language, duration, link }
 
-    const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]')
-    localStorage.setItem('projects', JSON.stringify([...existingProjects, newProject]))
+    const userId = localStorage.getItem('userId')
+    const userName = localStorage.getItem('userName')
+    if (!userId || !userName) {
+      setErrorMessage('ユーザー情報が見つかりません。ログインしてください。')
+      return
+    }
 
-    router.push('/') // プロジェクト追加後、メインページにリダイレクト
+    const newProject = {
+      title,
+      language,
+      duration,
+      link,
+      addedBy: userId,
+      addedByName: userName,
+    }
+
+    console.log('Submitting project:', newProject)
+
+    try {
+      const res = await fetch('/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProject),
+      })
+
+      if (!res.ok) {
+        const errorData = await res.json()
+        console.error('Error from server:', errorData)
+        setErrorMessage(errorData.error)
+        return
+      }
+      router.push('/')
+    } catch (error) {
+      console.error('Error adding project:', error)
+      setErrorMessage('プロジェクトの追加に失敗しました')
+
+      if (error instanceof Error) {
+        setErrorMessage(error.message)
+      } else {
+        setErrorMessage('プロジェクトの追加に失敗しました')
+      }
+    }
   }
 
   return (
     <div className="container mx-auto p-4">
+      {errorMessage && (
+        <p className="text-red-500">
+          {typeof errorMessage === 'string' ? errorMessage : 'エラーが発生しました'}
+        </p>
+      )}
       <h1 className="text-xl font-bold">プロジェクト追加</h1>
       <form onSubmit={handleSubmit} className="mt-4">
         <div className="mt-4">
