@@ -1,6 +1,20 @@
-interface LoginFormStateType {
+export const initialState: LoginFormStateType = {
+  errorMessage: '',
+  userName: '',
+  userImage: '',
+  email: '',
+  password: '',
+  school: '',
+  languages: '',
+  position: '',
+  githubAccount: '',
+  xAccount: '',
+}
+
+export interface LoginFormStateType {
+  errorMessage: string | null
   userName: string
-  userIamge: string
+  userImage: string
   email: string
   password: string
   school: string
@@ -11,16 +25,16 @@ interface LoginFormStateType {
 }
 
 type Action =
-  | { type: 'INIITALIZE'; userData: LoginFormStateType }
+  | { type: 'INITIALIZE'; userData: LoginFormStateType }
   | { type: 'CLEAR' }
-  | { type: 'SET_DATA'; name: string; value: string }
+  | { type: 'SET_DATA'; name: keyof LoginFormStateType; value: string }
 
 export const UserFormReducer = (
-  userFormState: LoginFormStateType,
+  userFormState: LoginFormStateType = initialState,
   userFormAction: Action,
 ): LoginFormStateType => {
   switch (userFormAction.type) {
-    case 'INIITALIZE':
+    case 'INITIALIZE':
       return userFormAction.userData
 
     case 'SET_DATA':
@@ -30,17 +44,7 @@ export const UserFormReducer = (
       }
 
     case 'CLEAR':
-      return {
-        userName: '',
-        userIamge: '',
-        email: '',
-        password: '',
-        school: '',
-        languages: '',
-        position: '',
-        githubAccount: '',
-        xAccount: '',
-      }
+      return initialState // 初期状態に戻す
 
     default:
       return userFormState
