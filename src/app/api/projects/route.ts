@@ -1,3 +1,4 @@
+import { CommentsModel } from '@/lib/mongoDB/models/comments'
 import { ProjectModel } from '@/lib/mongoDB/models/projects'
 import connectDB from '@/lib/mongoDB/mongoDB'
 
@@ -51,7 +52,11 @@ export async function GET() {
   await connectDB()
 
   try {
-    const projects = await ProjectModel.find()
+    const projects = await ProjectModel.find().populate('comments')
+    const comments = await CommentsModel.find()
+
+    // プロジェクト取得後の確認
+    console.log('Fetched projects:', projects)
 
     if (!projects || projects.length === 0) {
       return new Response(JSON.stringify({ error: 'プロジェクトがありません。' }), {
@@ -63,7 +68,7 @@ export async function GET() {
         },
       })
     }
-    return new Response(JSON.stringify({ projects }), {
+    return new Response(JSON.stringify({ projects, comments }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })
