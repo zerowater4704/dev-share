@@ -30,7 +30,7 @@ export async function GET(req: Request) {
     const userId = (decoded as JwtPayload).id
 
     // ユーザーIDに基づいてプロジェクトを取得
-    const projects = await ProjectModel.find({ addedBy: userId })
+    const projects = await ProjectModel.find({ addedBy: userId }).populate('addedBy')
 
     if (!projects || projects.length === 0) {
       return new Response(JSON.stringify({ error: 'No projects found for this user' }), {

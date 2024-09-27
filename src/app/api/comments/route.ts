@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
     await newComment.save()
 
-    const project = await ProjectModel.findById(body.project)
+    const project = await ProjectModel.findById(body.project).populate('addedBy', 'userName')
 
     if (!project) {
       return new Response(JSON.stringify({ message: 'プロジェクトが見つかりません。' }), {

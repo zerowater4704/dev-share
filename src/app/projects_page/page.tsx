@@ -58,9 +58,6 @@ const Page = () => {
 
   // handleSubmitComment はコメントを受け取る
   const handleSubmitComment = async (comment: string) => {
-    console.log('Comment submitted for project:', currentProject)
-    console.log('Comment:', comment)
-
     if (!currentProject) return
 
     try {
@@ -68,7 +65,7 @@ const Page = () => {
       const userId = localStorage.getItem('userId')
 
       const bodyData = {
-        addedBy: 'ユーザーのID', // ユーザーIDを正しく取得
+        addedBy: userId, // ユーザーIDを正しく取得
         project: currentProject._id,
         comment: comment,
       }
@@ -93,7 +90,14 @@ const Page = () => {
       }
 
       const responseData = await res.json()
-      console.log('Comment successfully submitted:', responseData)
+
+      const updatedProjects = projects.map((project) =>
+        project._id === currentProject._id
+          ? { ...project, comments: [...project.comments, responseData.newComment] }
+          : project,
+      )
+
+      setProjects(updatedProjects)
     } catch (error) {
       console.error('Error submitting comment:', error)
     }
@@ -156,11 +160,14 @@ const Page = () => {
         </div>
       </div>
 
-      <CommentModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onSubmit={handleSubmitComment}
-      />
+      {currentProject && (
+        <CommentModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onSubmit={handleSubmitComment}
+          comments={currentProject.comments}
+        />
+      )}
     </>
   )
 }

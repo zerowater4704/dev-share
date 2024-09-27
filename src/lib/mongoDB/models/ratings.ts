@@ -19,4 +19,4 @@ const ratingSchema = new Schema<RatingType>({
   },
 })
 
-export const ratingsModel = mongoose.models.Rating || mongoose.model('Rating', ratingSchema)
+export const RatingsModel = mongoose.models.Rating || mongoose.model('Rating', ratingSchema)

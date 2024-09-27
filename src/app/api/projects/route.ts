@@ -52,9 +52,6 @@ export async function GET() {
 
   try {
     const projects = await ProjectModel.find()
-      .populate('rating')
-      .populate('comments')
-      .populate('addedBy')
 
     if (!projects || projects.length === 0) {
       return new Response(JSON.stringify({ error: 'プロジェクトがありません。' }), {
