@@ -1,4 +1,4 @@
-import type { pagenateProps } from './usePagenation'
+import type { pagenateProps } from '../../hooks/usePagenation'
 
 const Pagination = ({ pageNumbers, pagenate, currentPage }: pagenateProps) => {
   // const pageNumbers = [];

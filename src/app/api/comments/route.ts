@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       })
     }
 
-    project.comments.push(newComment._id as mongoose.Schema.Types.ObjectId)
+    project.comments.push(newComment as mongoose.Schema.Types.ObjectId)
     await project.save()
 
     return new Response(JSON.stringify({ message: 'コメントが作成されました。', newComment }), {

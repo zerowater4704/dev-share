@@ -1,3 +1,4 @@
+import useRating from '@/hooks/useRating'
 import Link from 'next/link'
 import type { Dispatch, SetStateAction } from 'react'
 
@@ -11,9 +12,12 @@ const CardBack = ({
   setFlip: Dispatch<SetStateAction<boolean>>
   setFlipCardId: Dispatch<SetStateAction<string | null>>
 }) => {
+  const { calcAverage, renderStars } = useRating()
   const flipToggle = () => {
     setFlipCardId(null)
   }
+
+  console.log(user.projects)
 
   return (
     <div className="relative h-[350px] w-full rounded-xl bg-gray-200 p-3">
@@ -40,51 +44,12 @@ const CardBack = ({
                     </Link>
                   </div>
                 </div>
-                <div className="pl-3 text-sm">⭐️⭐️⭐️⭐️⭐️4.3</div>
+                <div className="pl-3 text-sm">
+                  {renderStars()}
+                  {calcAverage(project.rating)}
+                </div>
               </li>
             ))}
-
-            {/* <li className=" flex flex-col justify-between">
-              <div className="flex justify-between">
-                <span className="flex-1 items-center border-l-4 border-purple-700 pl-2 font-bold">
-                  Todoアプリ
-                </span>
-                <div className="flex gap-1">
-                  <Link href="/">
-                    <button className="w-16 rounded-full bg-black p-1 text-sm text-white">
-                      GitHub
-                    </button>
-                  </Link>
-                  <Link href="/">
-                    <button className="w-16 rounded-full bg-purple-700 p-1 text-sm text-white">
-                      App
-                    </button>
-                  </Link>
-                </div>
-              </div>
-              <div className="pl-3 text-sm">⭐️⭐️⭐️⭐️⭐️5</div>
-            </li>
-
-            <li className=" flex flex-col justify-between">
-              <div className="flex justify-between">
-                <span className="flex-1 items-center border-l-4 border-purple-700 pl-2 font-bold">
-                  Todoアプリ
-                </span>
-                <div className="flex gap-1">
-                  <Link href="/">
-                    <button className="w-16 rounded-full bg-black p-1 text-sm text-white">
-                      GitHub
-                    </button>
-                  </Link>
-                  <Link href="/">
-                    <button className="w-16 rounded-full bg-purple-700 p-1 text-sm text-white">
-                      App
-                    </button>
-                  </Link>
-                </div>
-              </div>
-              <div className="pl-3 text-sm">⭐️⭐️⭐️⭐️⭐️3.5</div>
-            </li> */}
           </ul>
         ) : (
           <div className="mt-24 w-full text-center">データがありません💦</div>

@@ -7,19 +7,19 @@ interface ProjectType {
   language: string[]
   rating: RatingType[]
   comments: CommentType[]
-  addedBy: string
+  addedBy: UserType
 }
 
 interface RatingType {
   _id: string
-  addedby: UserType
-  rating: number[]
+  addedby: string
+  rating: number
 }
 
 interface CommentType {
   _id: string
-  addedBy: UserType
-  project: ProjectType
+  addedBy: string
+  project: string
   comment: string[]
   createdAt: Date
 }

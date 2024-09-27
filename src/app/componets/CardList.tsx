@@ -1,9 +1,9 @@
 'use client'
 import { useState } from 'react'
+import usePageNation from '../../hooks/usePagenation'
 import CardBack from './CardBack'
 import CardFront from './CardFront'
 import Pagination from './Pagenation'
-import usePageNation from './usePagenation'
 
 const CardList = ({ usersData }: { usersData: UserAndProjectDataType[] }) => {
   const [flip, setFlip] = useState<boolean>(false)
