@@ -2,10 +2,13 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import CommentModal from '../componets/CommentModal'
 
 const Page = () => {
   const [projects, setProjects] = useState<any[]>([])
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [currentProject, setCurrentProject] = useState<any | null>(null)
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -43,6 +46,61 @@ const Page = () => {
     fetchProjects()
   }, [])
 
+  const handleOpenModal = (project: any) => {
+    setCurrentProject(project)
+    setIsModalOpen(true)
+  }
+
+  // onClose は引数を取らない
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+  }
+
+  // handleSubmitComment はコメントを受け取る
+  const handleSubmitComment = async (comment: string) => {
+    console.log('Comment submitted for project:', currentProject)
+    console.log('Comment:', comment)
+
+    if (!currentProject) return
+
+    try {
+      const token = localStorage.getItem('token')
+      const userId = localStorage.getItem('userId')
+
+      const bodyData = {
+        addedBy: 'ユーザーのID', // ユーザーIDを正しく取得
+        project: currentProject._id,
+        comment: comment,
+      }
+      console.log('Sending data:', bodyData)
+      const res = await fetch('/api/comments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          addedBy: userId, // ユーザーIDは実際の認証から取得する必要があります
+          project: currentProject._id,
+          comment: comment,
+        }),
+      })
+
+      if (!res.ok) {
+        const errorData = await res.json()
+        console.error('Error submitting comment:', errorData)
+        return
+      }
+
+      const responseData = await res.json()
+      console.log('Comment successfully submitted:', responseData)
+    } catch (error) {
+      console.error('Error submitting comment:', error)
+    }
+
+    setIsModalOpen(false) // コメント送信後にモーダルを閉じる
+  }
+
   return (
     <>
       <div className="container mx-auto p-4">
@@ -78,7 +136,14 @@ const Page = () => {
                   </div>
 
                   <div className="mt-4">
-                    <div className="border p-2 rounded">コメントなし</div>
+                    <button
+                      className="bg-gray-200 p-2 rounded"
+                      onClick={() => handleOpenModal(project)} // Open modal on click
+                    >
+                      {project.comments.length > 0
+                        ? `コメント: ${project.comments.length}`
+                        : 'コメントなし'}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -90,6 +155,12 @@ const Page = () => {
           <button className="bg-gray-200 px-4 py-2 rounded">Next</button>
         </div>
       </div>
+
+      <CommentModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmitComment}
+      />
     </>
   )
 }

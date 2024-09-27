@@ -38,6 +38,7 @@ export async function POST(req: Request) {
       headers: { 'Content-Type': 'application/json' },
     })
   } catch (error) {
+    console.error('Error details:', error)
     return new Response(JSON.stringify({ message: 'コメント作成に失敗しました。' }), {
       status: 500,
       headers: {
