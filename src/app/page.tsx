@@ -36,7 +36,7 @@ const page = async () => {
         throw new Error('Expected allProjects to be an array')
       }
 
-      console.log('allProjects:', allProjects)
+      // console.log('allProjects:', allProjects)
 
       const mergedData = allUsers.map((user) => {
         const userProjects = allProjects.filter((project) => project.addedBy === user._id)
