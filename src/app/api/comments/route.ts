@@ -19,6 +19,9 @@ export async function POST(req: Request) {
 
     const project = await ProjectModel.findById(body.project).populate('addedBy', 'userName')
 
+    // プロジェクト取得時の確認
+    console.log('Fetched project:', project)
+
     if (!project) {
       return new Response(JSON.stringify({ message: 'プロジェクトが見つかりません。' }), {
         status: 404,
@@ -53,9 +56,9 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   await connectDB()
   const { searchParams } = new URL(req.url)
-  const project = searchParams.get('project')
+  const projectId = searchParams.get('project')
 
-  if (!project) {
+  if (!projectId) {
     return new Response(JSON.stringify({ message: 'プロジェクトIDが指定されていません。' }), {
       status: 400,
       headers: {
@@ -67,7 +70,10 @@ export async function GET(req: Request) {
   }
 
   try {
-    const allComment = await CommentsModel.find({ project })
+    const allComment = await CommentsModel.find({ project: projectId }).populate(
+      'addedBy',
+      'userName',
+    )
 
     if (!allComment) {
       return new Response(JSON.stringify({ message: 'コメントが見つかりません。' }), {
@@ -80,10 +86,13 @@ export async function GET(req: Request) {
       })
     }
 
-    return new Response(JSON.stringify({ message: 'コメント取得に成功しました。', allComment }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return new Response(
+      JSON.stringify({ message: 'コメント取得に成功しました。', comments: allComment }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    )
   } catch (error) {
     return new Response(JSON.stringify({ message: 'コメント取得に失敗しました。' }), {
       status: 500,

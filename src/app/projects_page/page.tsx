@@ -9,11 +9,11 @@ const Page = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [currentProject, setCurrentProject] = useState<any | null>(null)
+  const [comments, setComments] = useState<any[]>([])
 
   useEffect(() => {
     const fetchProjects = async () => {
       const token = localStorage.getItem('token')
-      console.log(token)
       if (!token) {
         setErrorMessage('ログインしてください')
         return
@@ -46,6 +46,27 @@ const Page = () => {
     fetchProjects()
   }, [])
 
+  useEffect(() => {
+    const fetchProjectData = async () => {
+      if (!currentProject) return
+      try {
+        const res = await fetch(`/api/comments?project=${currentProject._id}`)
+        const data = await res.json()
+
+        if (!res.ok) {
+          console.error('Error fetching comments:', data.message)
+        } else {
+          console.log('Fetched comments:', data.comments)
+          setComments(data.comments) // コメントをセット
+        }
+      } catch (error) {
+        console.error('Error fetching comments:', error)
+      }
+    }
+
+    fetchProjectData()
+  }, [currentProject])
+
   const handleOpenModal = (project: any) => {
     setCurrentProject(project)
     setIsModalOpen(true)
@@ -69,7 +90,7 @@ const Page = () => {
         project: currentProject._id,
         comment: comment,
       }
-      console.log('Sending data:', bodyData)
+
       const res = await fetch('/api/comments', {
         method: 'POST',
         headers: {
