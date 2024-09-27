@@ -1,13 +1,19 @@
 'use client'
 
+import useAuth from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const router = useRouter()
+  const { checkToken } = useAuth()
+
+  useEffect(() => {
+    checkToken()
+  }, [checkToken])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,10 +43,10 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
-        <h2 className="text-2xl font-bold mb-4 text-black text-center">ログイン</h2>
+    <div className="flex min-h-screen items-center justify-center p-6">
+      <div className="w-full max-w-md rounded-lg bg-white p-6">
+        {errorMessage && <p className="text-center text-red-500">{errorMessage}</p>}
+        <h2 className="mb-4 text-center text-2xl font-bold text-black">ログイン</h2>
         <form className="space-y-4" onSubmit={handleLogin}>
           <div>
             <label className="block text-sm font-medium text-gray-700">メールアドレス:</label>
@@ -50,7 +56,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="email"
               required
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
           <div>
@@ -61,20 +67,20 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="password"
               required
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
 
           <button
             type="submit"
-            className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 w-full"
+            className="w-full rounded-md bg-purple-500 px-4 py-2 text-white hover:bg-purple-600"
           >
             ログイン
           </button>
           <button
             type="button"
             onClick={() => router.push('/users_register')}
-            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 w-full mt-2"
+            className="mt-2 w-full rounded-md bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
           >
             会員登録
           </button>
