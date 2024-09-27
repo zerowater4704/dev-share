@@ -24,4 +24,5 @@ const userSchema = new Schema<UserType>({
   xAccount: { type: String },
 })
 
+// export const User = mongoose.model('User', userSchema)
 export const userModel = mongoose.models.User || mongoose.model('User', userSchema)

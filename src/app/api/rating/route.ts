@@ -1,5 +1,5 @@
 import { ProjectModel } from '@/lib/mongoDB/models/projects'
-import { RatingsModel } from '@/lib/mongoDB/models/ratings'
+import { ratingsModel } from '@/lib/mongoDB/models/ratings'
 
 import connectDB from '@/lib/mongoDB/mongoDB'
 import type mongoose from 'mongoose'
@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
   try {
     // 新しい評価を作成
-    const newRating = new RatingsModel({
+    const newRating = new ratingsModel({
       addedBy: body.addedBy,
       rating: body.rating,
     })
