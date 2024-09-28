@@ -2,11 +2,8 @@
 
 import { useRouter } from 'next/navigation'
 import React, { useReducer } from 'react'
-import {
-  initialState,
-  LoginFormStateType,
-  UserFormReducer,
-} from '../state/reducer/FormInpurReducer'
+import type { LoginFormStateType } from '../state/reducer/LoginFormInpurReducer'
+import { initialState, UserFormReducer } from '../state/reducer/LoginFormInpurReducer'
 
 const Register = () => {
   const [state, dispatch] = useReducer(UserFormReducer, initialState)
@@ -38,10 +35,10 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        {state.errorMessage && <p className="text-red-500 text-center">{state.errorMessage}</p>}
-        <h2 className="text-2xl text-black font-bold mb-4 text-center">会員登録</h2>
+    <div className="flex min-h-screen items-center justify-center p-6">
+      <div className="w-full max-w-md rounded-lg bg-white p-6">
+        {state.errorMessage && <p className="text-center text-red-500">{state.errorMessage}</p>}
+        <h2 className="mb-4 text-center text-2xl font-bold text-black">会員登録</h2>
         <form className="space-y-4" onSubmit={handleRegister}>
           {/* フォームフィールド */}
           {[
@@ -105,20 +102,20 @@ const Register = () => {
                 onChange={(e) => dispatch({ type: 'SET_DATA', name: field, value: e.target.value })} // リデューサーを使用してフィールドを更新
                 placeholder={placeholder}
                 required={required}
-                className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
           ))}
           <button
             type="submit"
-            className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 w-full"
+            className="w-full rounded-md bg-purple-500 px-4 py-2 text-white hover:bg-purple-600"
           >
             登録
           </button>
           <button
             type="button"
             onClick={() => router.push('/users_login')}
-            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 w-full mt-2"
+            className="mt-2 w-full rounded-md bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
           >
             ログインへ
           </button>

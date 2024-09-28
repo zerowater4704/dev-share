@@ -6,12 +6,13 @@ import { useEffect, useState } from 'react'
 const AddPage = () => {
   const router = useRouter()
   const [title, setTitle] = useState('')
-  const [language, setLanguage] = useState<string[]>([])
+  const [language, setLanguage] = useState<string>('')
   const [duration, setDuration] = useState('')
   const [link, setLink] = useState('')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
   const [userName, setUserName] = useState<string | null>(null)
+  const [languageArray, setLanguageArray] = useState<string[]>([])
 
   useEffect(() => {
     // ログイン時に保存されたユーザー情報を取得
@@ -37,7 +38,7 @@ const AddPage = () => {
 
     const newProject = {
       title,
-      language,
+      language: languageArray,
       duration,
       link,
       addedBy: userId,
@@ -74,6 +75,10 @@ const AddPage = () => {
     }
   }
 
+  const handleCancel = () => {
+    router.push('/projects_page')
+  }
+
   return (
     <div className="container mx-auto p-4">
       {errorMessage && (
@@ -84,53 +89,87 @@ const AddPage = () => {
       <h1 className="text-xl font-bold">プロジェクト追加</h1>
       <form onSubmit={handleSubmit} className="mt-4">
         <div className="mt-4">
-          <label className="block mb-1">タイトル:</label>
+          <label className="mb-1 block">タイトル:</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="border rounded w-full p-2"
+            className="w-full rounded border p-2"
             placeholder="プロジェクトタイトル"
           />
         </div>
         <div className="mt-4">
-          <label className="block mb-1">開発言語:</label>
-          <select
-            multiple
-            value={language}
-            onChange={(e) =>
-              setLanguage([...e.target.selectedOptions].map((option) => option.value))
-            }
-            className="border rounded w-full p-2"
-          >
-            <option value="Java">Java</option>
-            <option value="React">React</option>
-            <option value="Next.js">Next.js</option>
-          </select>
+          <label className="mb-1 block">開発言語:</label>
+          <div className="flex items-center gap-1">
+            <select
+              // multiple
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="w-full rounded border p-2"
+            >
+              <option value="Java">Java</option>
+              <option value="React">React</option>
+              <option value="Next.js">Next.js</option>
+              <option value="TypeScript">TypeScript</option>
+              <option value="Ruby">Ruby</option>
+              <option value="PHP">PHP</option>
+            </select>
+            <button
+              className="w-3/12 rounded-md bg-purple-700 py-2 text-white"
+              disabled={language === '' ? true : false}
+              onClick={() => setLanguageArray((prev) => [...prev, language])}
+            >
+              Add
+            </button>
+          </div>
+          <ul className="mt-2 flex w-9/12 gap-4">
+            {languageArray.map((lang, index) => (
+              <li
+                key={index}
+                className="flex w-[100px] items-center justify-around rounded-full bg-gray-500 p-1"
+              >
+                <span>{lang}</span>
+                <button
+                  onClick={() => setLanguageArray((prev) => prev.filter((p, i) => i !== index))}
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
         <div className="mt-4">
-          <label className="block mb-1">開発期間:</label>
+          <label className="mb-1 block">開発期間:</label>
           <input
             type="text"
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
-            className="border rounded w-full p-2"
+            className="w-full rounded border p-2"
             placeholder="開発期間"
           />
         </div>
         <div className="mt-4">
-          <label className="block mb-1">アプリのリンク:</label>
+          <label className="mb-1 block">アプリのリンク:</label>
           <input
             type="text"
             value={link}
             onChange={(e) => setLink(e.target.value)}
-            className="border rounded w-full p-2"
+            className="w-full rounded border p-2"
             placeholder="https://your-app-link.com"
           />
         </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4">
-          追加
-        </button>
+        <div className="flex gap-5">
+          <button
+            type="submit"
+            className="mt-4 w-48 rounded bg-gray-500 px-4 py-2 text-white"
+            onClick={handleCancel}
+          >
+            キャンセル
+          </button>
+          <button type="submit" className="mt-4 w-48 rounded bg-blue-500 px-4 py-2 text-white">
+            追加
+          </button>
+        </div>
       </form>
     </div>
   )
