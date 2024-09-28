@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import CommentModal from '../componets/CommentModal'
+import CommentModal from './components/CommentModal'
 
 const Page = () => {
   const [projects, setProjects] = useState<any[]>([])
