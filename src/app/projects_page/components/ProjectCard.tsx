@@ -1,18 +1,28 @@
 import React, { useEffect, useState } from 'react'
+import DeleteButton from './DeleteButton'
 
 interface ProjectCardProps {
   project: any
   onOpenModal: (project: any) => void
   onOpenRatingModal: (project: any) => void
+  onDelete: (id: string) => void
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenModal, onOpenRatingModal }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({
+  project,
+  onOpenModal,
+  onOpenRatingModal,
+  onDelete,
+}) => {
   const [averageRating, setAverageRating] = useState<number | null>(null)
+  const [userRating, setUserRating] = useState<number | null>(null)
+  const [isRatingFetched, setIsRatingFetched] = useState(false)
 
   useEffect(() => {
     const fetchRating = async () => {
       const token = localStorage.getItem('token')
-      if (!token) {
+      const userId = localStorage.getItem('userId')
+      if (!token || !userId) {
         console.error('トークンが見つかりません')
         return
       }
@@ -26,27 +36,27 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenModal, onOpenR
           },
         })
 
-        console.log('Response status:', res.status)
-
         const data = await res.json()
+
         if (!res.ok) {
           console.error('Error fetching rating:', data.message)
           return
         }
 
-        const ratings = data?.ratings || []
-        console.log('Fetched ratings:', ratings)
+        const projectData = data.projects.find((proj: any) => proj._id === project._id)
+        console.log('ProjectCard API response:', projectData)
 
-        if (ratings.length > 0) {
-          const totalRating = ratings.reduce(
-            (acc: number, rating: { rating: number }) => acc + rating.rating,
-            0,
-          )
-          const avg = totalRating / ratings.length
-          setAverageRating(avg)
-        } else {
-          setAverageRating(0)
+        if (projectData) {
+          setAverageRating(parseFloat(projectData.averageRating || '0'))
+
+          // 各プロジェクトの評価を確認し、ユーザーの評価があるか確認
+          const userRatingData = Array.isArray(projectData.ratings)
+            ? projectData.ratings.find((rating: any) => rating.addedBy === userId)
+            : null
+          setUserRating(userRatingData ? userRatingData.rating : null)
         }
+
+        setIsRatingFetched(true)
       } catch (error) {
         console.error('Error fetching rating:', error)
       }
@@ -72,18 +82,25 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenModal, onOpenR
 
         <div className="text-right">
           <div className="mt-4">
-            <div className="flex justify-end items-center">
+            <div className="flex justify-end items-end">
               <span
-                className={`text-2xl mr-4 ${averageRating ? 'text-yellow-500' : 'text-gray-300'}`}
+                className={`text-2xl ${userRating !== null ? 'text-yellow-500' : 'text-gray-300'}`}
+                onClick={
+                  userRating !== null || !isRatingFetched
+                    ? undefined
+                    : () => onOpenRatingModal(project) // ユーザーが評価していない場合のみクリック可能
+                }
+                style={{
+                  cursor: userRating !== null || !isRatingFetched ? 'not-allowed' : 'pointer',
+                }}
               >
-                {averageRating ? averageRating.toFixed(2) : '0'}
+                ★
               </span>
-              <button
-                className=" p-2 rounded"
-                onClick={() => onOpenRatingModal(project)} // Open modal on click
+              <span
+                className={`text-md ${averageRating !== null ? 'text-yellow-500' : 'text-gray-300'}`}
               >
-                <span className={`text-2xl text-gray-300`}>★</span>
-              </button>
+                {averageRating !== null ? averageRating.toFixed(1) : '0.00'}
+              </span>
             </div>
           </div>
 
@@ -97,6 +114,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenModal, onOpenR
                 : 'コメントなし'}
             </button>
           </div>
+          <DeleteButton projectId={project._id} onDelete={onDelete} />
         </div>
       </div>
     </div>

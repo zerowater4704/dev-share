@@ -39,6 +39,8 @@ export async function GET(req: Request) {
         populate: { path: 'addedBy', select: 'userName' }, // コメントのaddedByをpopulate
       })
       .populate('rating')
+
+    console.log('Project API response:', projects)
     const comments = await CommentsModel.find()
     const ratings = await RatingsModel.find()
 
@@ -57,6 +59,51 @@ export async function GET(req: Request) {
     return new Response(JSON.stringify({ error: 'Invalid token' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' },
+    })
+  }
+}
+
+export async function DELETE(req: Request) {
+  await connectDB()
+
+  const url = new URL(req.url)
+  const id = url.searchParams.get('id')
+
+  if (!id) {
+    return new Response(JSON.stringify({ error: 'IDが見つかりません。' }), {
+      status: 404,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'DELETE',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
+  }
+
+  try {
+    const project = await ProjectModel.findByIdAndDelete(id)
+    console.log('project api:', project)
+    if (project) {
+      console.log('削除されたプロジェクト:', project)
+      return new Response(JSON.stringify({ message: 'プロジェクトが削除されました。' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    } else {
+      console.log('プロジェクトが見つかりません:', id)
+      return new Response(JSON.stringify({ error: 'プロジェクトが見つかりません。' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+  } catch (error) {
+    return new Response(JSON.stringify({ error }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'DELETE',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
     })
   }
 }

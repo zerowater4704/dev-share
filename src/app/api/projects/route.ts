@@ -52,7 +52,7 @@ export async function GET() {
   await connectDB()
 
   try {
-    const projects = await ProjectModel.find().populate('comments')
+    const projects = await ProjectModel.find().populate('comments').populate('rating')
     const comments = await CommentsModel.find()
 
     // プロジェクト取得後の確認
