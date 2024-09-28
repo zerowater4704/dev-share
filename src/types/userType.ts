@@ -1,7 +1,7 @@
 interface UserType {
   _id: string
   userName: string
-  userImage: string
+  userImage: Blob | MediaSource
   email: string
   password: string
   school: string
@@ -15,7 +15,7 @@ interface UserAndProjectDataType {
   projects: ProjectType[]
   _id: string
   userName: string
-  userImage: string
+  userImage: Blob | MediaSource
   email: string
   password: string
   school: string

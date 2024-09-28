@@ -1,5 +1,5 @@
 export const initialState: LoginFormStateType = {
-  errorMessage: '',
+  // errorMessage: '',
   userName: '',
   userImage: '',
   email: '',
@@ -12,7 +12,7 @@ export const initialState: LoginFormStateType = {
 }
 
 export interface LoginFormStateType {
-  errorMessage: string | null
+  // errorMessage: string | null
   userName: string
   userImage: string
   email: string
@@ -27,7 +27,7 @@ export interface LoginFormStateType {
 type Action =
   | { type: 'INITIALIZE'; userData: LoginFormStateType }
   | { type: 'CLEAR' }
-  | { type: 'SET_DATA'; name: keyof LoginFormStateType; value: string }
+  | { type: 'SET_DATA'; name: string; value: string; fileName: string }
 
 export const UserFormReducer = (
   userFormState: LoginFormStateType = initialState,
@@ -41,6 +41,7 @@ export const UserFormReducer = (
       return {
         ...userFormState,
         [userFormAction.name]: userFormAction.value,
+        userImage: userFormAction.fileName,
       }
 
     case 'CLEAR':

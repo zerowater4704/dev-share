@@ -19,7 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "mongodb": "^6.9.0",
-    "mongoose": "^8.6.3",
+    "mongoose": "^8.7.0",
     "next": "^14.2.13",
     "prismjs": "^1.29.0",
     "react": "^18",
