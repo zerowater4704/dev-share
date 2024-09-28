@@ -20,7 +20,7 @@ const CardBack = ({
   console.log(user.projects)
 
   return (
-    <div className="relative h-[350px] w-full rounded-xl bg-gray-200 p-3">
+    <div className="relative h-[350px] w-full rounded-md bg-gray-200 p-3">
       <div className="flex w-full flex-col gap-3">
         <h1 className="rounded-md bg-purple-700 py-1 text-center font-bold text-white">Projects</h1>
         {user.projects.length > 0 ? (
@@ -45,8 +45,8 @@ const CardBack = ({
                   </div>
                 </div>
                 <div className="pl-3 text-sm">
-                  {renderStars()}
-                  {calcAverage(project.rating)}
+                  {/* {renderStars()}
+                  {calcAverage(project.rating)} */}
                 </div>
               </li>
             ))}

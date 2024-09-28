@@ -15,25 +15,29 @@ const CardFront = ({
   }
 
   return (
-    <div className=" relative h-[350px] w-auto rounded-xl bg-gray-200 p-3">
+    <div className=" relative h-[350px] w-auto rounded-md bg-gray-200 p-3">
       <div className="flex w-full flex-col gap-3">
-        <div className="flex items-center ">
-          <h1 className="flex-1 border-l-4 border-purple-700 pl-2 font-bold">
-            {user?.userName as string}
-          </h1>
-          <div className="flex gap-2">
-            <Link href={`${user.githubAccount}`}>
-              <button className="w-[70px] rounded-md bg-black p-1 text-white">github</button>
-            </Link>
-            <Link href={`${user?.xAccount}`}>
-              <button className="w-[70px] rounded-md bg-purple-700 p-1 text-white">X</button>
-            </Link>
+        <div className="flex gap-4">
+          <div className="size-28 rounded-md bg-gray-400 text-center">image</div>
+          <div className="flex h-auto flex-col justify-around gap-3">
+            <h1 className=" border-l-4 border-purple-700 pl-2 text-lg font-bold ">
+              {user?.userName as string}
+            </h1>
+            <div className="flex gap-2">
+              <Link href={`${user.githubAccount}`}>
+                <button className="ml-auto w-[70px] rounded-md bg-black p-1 text-white">
+                  github
+                </button>
+              </Link>
+              <Link href={`${user?.xAccount}`}>
+                <button className="w-[70px] rounded-md bg-purple-700 p-1 text-white">X</button>
+              </Link>
+            </div>
           </div>
         </div>
-        <div className="w-ful h-36 rounded-md bg-gray-400 text-center">image</div>
 
-        <ul className="flex flex-col gap-1">
-          <li className="border-l-2 border-purple-700 pl-2">{user?.school}</li>
+        <ul className="mt-5 flex flex-col gap-2">
+          <li className="border-l-2 border-purple-700 pl-2">出身：{user?.school}</li>
           <li className="border-l-2 border-purple-700 pl-2">
             好きな技術：{user.languages.join(',')}
           </li>
