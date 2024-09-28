@@ -31,6 +31,8 @@ const ProjectsPage = () => {
   const [error, setError] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState<string>('') // 検索用のステート
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects) // フィルタリングされたプロジェク
 
   const fetchProjects = async () => {
     try {
@@ -48,6 +50,7 @@ const ProjectsPage = () => {
 
       const data = await response.json()
       setProjects(data.projects)
+      setFilteredProjects(data.projects) // 初期状態でフィルタリングされたプロジェクトを設定
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -69,6 +72,16 @@ const ProjectsPage = () => {
     setSelectedProjectId(null)
   }
 
+  const handleSearch = () => {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase() // 小文字に変換して比較
+    const filtered = projects.filter(
+      (project) =>
+        project.title.toLowerCase().includes(lowerCaseSearchTerm) || // タイトルに含まれる場合
+        project.language.some((lang) => lang.toLowerCase().includes(lowerCaseSearchTerm)), // 言語に含まれる場合
+    )
+    setFilteredProjects(filtered) // フィルタリングされたプロジェクトを更新
+  }
+
   if (loading) {
     return <div>Loading...</div>
   }
@@ -80,11 +93,25 @@ const ProjectsPage = () => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">All Projects</h1>
-      {projects.length === 0 ? (
+
+      <div className="flex mb-4">
+        <input
+          type="text"
+          placeholder="Search projects..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border border-gray-300 p-2 rounded-md flex-grow mr-2"
+        />
+        <button onClick={handleSearch} className="bg-blue-500 text-white p-2 rounded-md">
+          Search
+        </button>
+      </div>
+
+      {filteredProjects.length === 0 ? (
         <p>No projects found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {projects.map((project) => (
+          {filteredProjects.map((project) => (
             <ProjectCard
               key={project._id}
               project={project}
