@@ -7,6 +7,7 @@ interface RatingModalCardProps {
 }
 
 const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose, projectId }) => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
   const [rating, setRating] = useState<number>(0)
   const [currentRating, setCurrentRating] = useState<number | null>(null)
 
@@ -21,7 +22,7 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
           return
         }
 
-        const res = await fetch(`/api/rating?project=${projectId}`, {
+        const res = await fetch(`${apiUrl}/api/rating?project=${projectId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -49,7 +50,7 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
       }
     }
     fetchProjectData()
-  }, [isOpen, projectId])
+  }, [apiUrl, isOpen, projectId])
 
   const handleSubmitRating = async () => {
     if (!projectId) return

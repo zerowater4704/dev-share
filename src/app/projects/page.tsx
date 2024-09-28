@@ -34,32 +34,34 @@ const ProjectsPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>('') // 検索用のステート
   const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects) // フィルタリングされたプロジェク
 
-  const fetchProjects = async () => {
-    try {
-      const response = await fetch('/api/projects', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // JWTトークンをヘッダーに追加
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error('プロジェクトを取得できませんでした')
-      }
-
-      const data = await response.json()
-      setProjects(data.projects)
-      setFilteredProjects(data.projects) // 初期状態でフィルタリングされたプロジェクトを設定
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   useEffect(() => {
+    const fetchProjects = async () => {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
+
+      try {
+        const response = await fetch(`${apiUrl}/api/projects`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // JWTトークンをヘッダーに追加
+          },
+        })
+
+        if (!response.ok) {
+          throw new Error('プロジェクトを取得できませんでした')
+        }
+
+        const data = await response.json()
+        setProjects(data.projects)
+        setFilteredProjects(data.projects) // 初期状態でフィルタリングされたプロジェクトを設定
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
     fetchProjects()
   }, [])
 

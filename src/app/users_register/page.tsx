@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import React, { useReducer, useState } from 'react'
 
 const Register = () => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
   const [state, dispatch] = useReducer(UserFormReducer, initialState)
   const router = useRouter()
   const [file, setFile] = useState<File | null>(null)
@@ -30,7 +31,7 @@ const Register = () => {
     e.preventDefault()
 
     try {
-      const res = await fetch('/api/users', {
+      const res = await fetch(`${apiUrl}/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,8 +50,6 @@ const Register = () => {
       console.error('エラー:', error)
     }
   }
-
-  const saveImage = () => {}
 
   return (
     <div className="flex min-h-screen items-center justify-center p-6">

@@ -1,3 +1,4 @@
+'use server'
 import { CommentsModel } from '@/lib/mongoDB/models/comments'
 import { ProjectModel } from '@/lib/mongoDB/models/projects'
 import connectDB from '@/lib/mongoDB/mongoDB'
@@ -52,7 +53,7 @@ export async function GET() {
   await connectDB()
 
   try {
-    const projects = await ProjectModel.find().populate('comments').populate('rating')
+    const projects = await ProjectModel.find().populate('comments')
     const comments = await CommentsModel.find()
 
     // プロジェクト取得後の確認

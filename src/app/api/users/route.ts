@@ -1,3 +1,4 @@
+'use server'
 import { userModel } from '@/lib/mongoDB/models/user'
 import connectDB from '@/lib/mongoDB/mongoDB'
 import bcrypt from 'bcrypt'

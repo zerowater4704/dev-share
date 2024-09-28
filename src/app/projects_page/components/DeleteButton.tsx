@@ -6,11 +6,12 @@ interface DeleteButtonProps {
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({ projectId, onDelete }) => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
   const handleDelete = async () => {
     if (window.confirm('本当に削除しますか？')) {
       try {
         const token = localStorage.getItem('token')
-        const res = await fetch(`/api/project?id=${projectId}`, {
+        const res = await fetch(`${apiUrl}/api/project?id=${projectId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -34,7 +35,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ projectId, onDelete }) => {
   }
 
   return (
-    <button onClick={handleDelete} className="bg-red-500 text-white p-2 rounded mt-2">
+    <button onClick={handleDelete} className="mt-2 rounded bg-red-500 p-2 text-white">
       削除
     </button>
   )
