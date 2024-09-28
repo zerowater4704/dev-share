@@ -1,0 +1,47 @@
+/* Login.module.css */
+
+@keyframes drop {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  30% {
+    transform: translateY(50%); /* 少し下に移動してバウンド */
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(-10%); /* 上に少し戻る */
+  }
+  100% {
+    transform: translateY(0); /* 元の位置に戻る */
+  }
+}
+
+.dropAnimation {
+  display: inline-block;
+  animation: drop 1.5s ease forwards; /* アニメーションを1.5秒に変更 */
+  animation-delay: 0.1s; /* 遅延を追加 */
+  background: linear-gradient(
+    90deg,
+    violet,
+    indigo,
+    blue,
+    green,
+    yellow,
+    orange,
+    red
+  ); /* 虹色のグラデーション */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold; /* フォントを太字に */
+  font-size: 3rem; /* フォントサイズを大きく */
+  white-space: nowrap; /* 文字が途切れないようにする */
+}
+
+.titleContainer {
+  display: flex;
+  justify-content: center; /* 中央揃え */
+  align-items: flex-start; /* 上揃え */
+  height: 150px; /* 高さを調整 */
+  margin-bottom: 20px; /* 下部に余白を追加 */
+}
