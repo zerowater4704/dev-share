@@ -1,7 +1,6 @@
 'use client'
 import Link from 'next/link'
 import type { Dispatch, SetStateAction } from 'react'
-import { useEffect, useState } from 'react'
 
 const CardFront = ({
   user,
@@ -12,32 +11,32 @@ const CardFront = ({
   setFlip: Dispatch<SetStateAction<boolean>>
   setFlipCardId: Dispatch<SetStateAction<string | null>>
 }) => {
-  const [imageURL, setImageURL] = useState<string | null>(null)
+  // const [imageURL, setImageURL] = useState<string | null>(null)
 
   const flipToggle = (id: string) => {
     setFlipCardId(id)
   }
 
-  useEffect(() => {
-    if (user.userImage instanceof File) {
-      const url = URL.createObjectURL(user.userImage)
-      setImageURL(url)
+  // useEffect(() => {
+  //   if (user.userImage instanceof File) {
+  //     const url = URL.createObjectURL(user.userImage)
+  //     setImageURL(url)
 
-      // クリーンアップ関数
-      return () => {
-        URL.revokeObjectURL(url)
-      }
-    } else {
-      setImageURL(null) // userImageが無い場合はnullを設定
-    }
-  }, [user.userImage])
+  //     // クリーンアップ関数
+  //     return () => {
+  //       URL.revokeObjectURL(url)
+  //     }
+  //   } else {
+  //     setImageURL(null) // userImageが無い場合はnullを設定
+  //   }
+  // }, [user.userImage])
 
   return (
     <div className="relative h-[350px] w-auto rounded-md bg-gray-200 p-3">
       <div className="flex w-full flex-col gap-3">
         <div className="flex gap-4">
           {user.userImage ? (
-            <img src={imageURL as string | undefined} width="112" height="112" alt="User Image" />
+            <img src={user.userImage} width="112" height="112" alt="User Image" />
           ) : (
             <div className="size-28 rounded-md bg-gray-400 text-center">image</div>
           )}

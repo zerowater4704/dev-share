@@ -1,28 +1,41 @@
 'use client'
 
+import { storage } from '@/lib/firebase/firebase'
 import { UserFormReducer, initialState } from '@/state/reducer/LoginFormInpurReducer'
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useRouter } from 'next/navigation'
 import React, { useReducer, useState } from 'react'
 
 const Register = () => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL
   const [state, dispatch] = useReducer(UserFormReducer, initialState)
   const router = useRouter()
-  const [file, setFile] = useState<File | null>(null)
+  // const [file, setFile] = useState<File | null>(null)
   const [fileName, setFileName] = useState<string>('')
+
+  const saveImage = async (file: File) => {
+    const storageRef = ref(storage, `images/${file?.name}`)
+    await uploadBytes(storageRef, file).then((snapshot) => {
+      console.log('success to save a photo')
+    })
+    const gsReference = ref(storage, `images/${file?.name}`)
+    await getDownloadURL(gsReference).then((url) => {
+      setFileName(url)
+    })
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-
     if (name === 'userImage') {
-      const selectedFile = e.target.files?.[0] // filesがundefinedの場合を考慮
-      if (selectedFile) {
-        setFile(selectedFile)
-        setFileName(selectedFile.name)
-      } else {
-        setFile(null) // ファイルが選択されなかった場合の処理
-        setFileName('') // 名前もクリア
-      }
+      const selectedFile = e.target.files?.[0]
+      saveImage(selectedFile as File)
+
+      // if (selectedFile) {
+      //   setFile(selectedFile)
+      //   setFileName(selectedFile.name)
+      // } else {
+      //   setFile(null) // ファイルが選択されなかった場合の処理
+      //   setFileName('') // 名前もクリア
+      // }
     }
     dispatch({ type: 'SET_DATA', name, value, fileName })
   }
@@ -31,7 +44,7 @@ const Register = () => {
     e.preventDefault()
 
     try {
-      const res = await fetch(`${apiUrl}/api/users`, {
+      const res = await fetch('/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
