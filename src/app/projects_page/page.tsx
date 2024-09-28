@@ -7,10 +7,12 @@ import ProjectCard from './components/ProjectCard'
 import RatingModalCardProps from './components/RatingModalCard'
 
 const Page = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [projects, setProjects] = useState<any[]>([])
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [currentProject, setCurrentProject] = useState<any | null>(null)
 
   useEffect(() => {
@@ -48,11 +50,13 @@ const Page = () => {
     fetchProjects()
   }, [])
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleOpenModal = (project: any) => {
     setCurrentProject(project)
     setIsModalOpen(true)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleOpenRatingModal = (project: any) => {
     setCurrentProject(project)
     setIsRatingModalOpen(true)
@@ -111,6 +115,7 @@ const Page = () => {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateProjects = (newProject: any) => {
     const updatedProjects = projects.map((project) =>
       project._id === newProject._id ? newProject : project,
@@ -122,14 +127,14 @@ const Page = () => {
   return (
     <>
       <div className="container mx-auto p-4">
-        <div className="flex justify-between mb-4">
+        <div className="mb-4 flex justify-between">
           <h1 className="text-xl font-bold">プロジェクト管理</h1>
           <Link href="/add_page">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded">追加</button>
+            <button className="rounded bg-blue-500 px-4 py-2 text-white">追加</button>
           </Link>
         </div>
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {projects.map((project, index) => (
             <ProjectCard
               key={index}
@@ -140,9 +145,9 @@ const Page = () => {
             />
           ))}
         </div>
-        <div className="flex justify-between mt-4">
-          <button className="bg-gray-200 px-4 py-2 rounded">Previous</button>
-          <button className="bg-gray-200 px-4 py-2 rounded">Next</button>
+        <div className="mt-4 flex justify-between">
+          <button className="rounded bg-gray-200 px-4 py-2">Previous</button>
+          <button className="rounded bg-gray-200 px-4 py-2">Next</button>
         </div>
       </div>
 

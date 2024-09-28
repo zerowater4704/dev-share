@@ -96,8 +96,9 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center h-screen w-screen">
-      <div className="bg-white p-4 rounded w-1/3">
+    // eslint-disable-next-line tailwindcss/migration-from-tailwind-2
+    <div className="fixed inset-0 flex h-screen w-screen items-center justify-center bg-black bg-opacity-50">
+      <div className="w-1/3 rounded bg-white p-4">
         <div className="mb-4 flex justify-center">
           <h3 className="font-semibold">
             現在の評価:{' '}
@@ -123,10 +124,10 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
         </div>
 
         <div className="flex justify-center">
-          <button className="bg-gray-300 px-4 py-2 rounded mr-2" onClick={onClose}>
+          <button className="mr-2 rounded bg-gray-300 px-4 py-2" onClick={onClose}>
             キャンセル
           </button>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={handleSubmitRating}>
+          <button className="rounded bg-blue-500 px-4 py-2 text-white" onClick={handleSubmitRating}>
             送信
           </button>
         </div>
