@@ -17,7 +17,15 @@ export async function POST(req: Request) {
 
     await newComment.save()
 
-    const project = await ProjectModel.findById(body.project).populate('addedBy', 'userName')
+    const project = await ProjectModel.findById(body.project)
+      .populate('addedBy', 'userName')
+      .populate({
+        path: 'comments', // commentsをpopulate
+        populate: {
+          path: 'addedBy', // コメントのaddedByもpopulate
+          select: 'userName', // userNameだけを選択
+        },
+      })
 
     // プロジェクト取得時の確認
     console.log('Fetched project:', project)

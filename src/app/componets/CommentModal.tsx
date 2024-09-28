@@ -26,17 +26,17 @@ const CommentModal: React.FC<CommentModalProps> = ({ isOpen, onClose, onSubmit, 
           <h3 className="font-semibold">既存のコメント</h3>
           <ul className="border p-2 max-h-40 overflow-y-auto">
             {comments && comments.length > 0 ? (
-              comments.map((commentObj, index) => (
-                <li key={index} className="p-2 border-b">
-                  <strong>
-                    {commentObj.addedBy && commentObj.addedBy.userName
-                      ? commentObj.addedBy.userName
-                      : '作成者'}
-                    :
-                  </strong>{' '}
-                  {commentObj.comment}
-                </li>
-              ))
+              comments.map((commentObj, index) => {
+                // コメントオブジェクトをデバッグ出力
+                console.log(commentObj)
+
+                return (
+                  <li key={index} className="p-2 border-b">
+                    <strong>{commentObj.addedBy ? commentObj.addedBy.userName : '作成者'}:</strong>{' '}
+                    {commentObj.comment}
+                  </li>
+                )
+              })
             ) : (
               <p>コメントがありません</p>
             )}
