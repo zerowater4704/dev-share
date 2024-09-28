@@ -3,6 +3,7 @@
 import useAuth from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import styles from './Login.module.css' // CSSモジュールのインポート
 
 const Login = () => {
   const [email, setEmail] = useState('')
@@ -45,8 +46,24 @@ const Login = () => {
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
       <div className="w-full max-w-md rounded-lg bg-white p-6">
+        {/* DevShareのアニメーション表示（上部に配置） */}
+        <div className={styles.titleContainer}>
+          <h1 className="text-center text-4xl">
+            {'DevShare'.split('').map((char, index) => (
+              <span
+                key={index}
+                className={styles.dropAnimation} // CSSモジュールのクラス名を使用
+                style={{ animationDelay: `${index * 0.2}s` }} // 各文字の遅延を0.2秒に設定
+              >
+                {char}
+              </span>
+            ))}
+          </h1>
+        </div>
+
         {errorMessage && <p className="text-center text-red-500">{errorMessage}</p>}
         <h2 className="mb-4 text-center text-2xl font-bold text-black">ログイン</h2>
+
         <form className="space-y-4" onSubmit={handleLogin}>
           <div>
             <label className="block text-sm font-medium text-gray-700">メールアドレス:</label>
