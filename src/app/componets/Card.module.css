@@ -1,0 +1,23 @@
+.card {
+  perspective: 1000px; /* 3D効果を適用 */
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 4.5s ease-in-out; /* アニメーションのスピードを1.5秒に設定 */
+  transform-style: preserve-3d; /* 3D空間のスタイルを保持 */
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; /* 裏面が見えないようにする */
+}
+
+.card-back {
+  transform: rotateY(180deg); /* 裏面を180度回転 */
+}

@@ -1,0 +1,22 @@
+/* Card.module.css */
+.card {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.button {
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.button:hover {
+  background-color: #4a4a4a; /* ホバー時の色 */
+  transform: scale(1.05); /* ボタンを少し大きくする */
+}
