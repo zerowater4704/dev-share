@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 interface RatingModalCardProps {
   isOpen: boolean
   onClose: () => void
-  // onSubmit: (rating: number) => Promise<void>
   projectId: string
 }
 
@@ -37,19 +36,18 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
         }
 
         const data = await res.json()
+        console.log('API response:', data.projects)
 
-        console.log('API response:', data)
-        if (!res.ok) {
-          console.error('Error fetching rating:', data.message)
+        if (data.projects && data.projects.length > 0) {
+          console.log('Fetched rating:', data.projects.averageRating) // ここで平均評価が見えるはず
+          setCurrentRating(data.projects.averageRating)
         } else {
-          console.log('Fetched rating:', data.rating)
-          setCurrentRating(data.averageRating) // コメントをセット
+          console.error('Rating data not found.')
         }
       } catch (error) {
         console.error('Error fetching rating:', error)
       }
     }
-
     fetchProjectData()
   }, [isOpen, projectId])
 
@@ -64,6 +62,8 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
         console.error('トークンが見つかりません。ログインしてください。')
         return
       }
+
+      console.log('Sending rating:', rating)
 
       const res = await fetch(`/api/rating?project=${projectId}`, {
         method: 'POST',
@@ -99,7 +99,12 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center h-screen w-screen">
       <div className="bg-white p-4 rounded w-1/3">
         <div className="mb-4 flex justify-center">
-          <h3 className="font-semibold">現在の評価: {currentRating ?? '未評価'}</h3>
+          <h3 className="font-semibold">
+            現在の評価:{' '}
+            {typeof currentRating === 'number' && !isNaN(currentRating)
+              ? currentRating.toFixed(1)
+              : '未評価'}
+          </h3>
         </div>
 
         <div className="mb-4 flex justify-center py-2">
@@ -111,7 +116,7 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
                 name="rating-8"
                 className="mask mask-star-2 bg-orange-400 text-6xl"
                 onChange={() => setRating(star)}
-                checked={star === rating} // 選択された星をチェックする
+                checked={rating === star} // 選択された星をチェックする
               />
             ))}
           </div>

@@ -3,17 +3,43 @@ import { ProjectModel } from '@/lib/mongoDB/models/projects'
 import { RatingsModel } from '@/lib/mongoDB/models/ratings'
 import connectDB from '@/lib/mongoDB/mongoDB'
 import { JwtPayload } from 'jsonwebtoken'
-import mongoose from 'mongoose'
 
 export async function POST(req: Request) {
   await connectDB()
   const body = await req.json()
 
   try {
-    // 新しい評価を作成
+    const existingRating = await RatingsModel.findOne({
+      addedBy: body.addedBy,
+      project: body.project,
+    })
+
+    // console.log('Executing findOne with query:', query)
+
+    // const existingRating = await RatingsModel.findOne(query)
+
+    console.log('Rating API Existing rating:', existingRating)
+
+    if (existingRating) {
+      return new Response(
+        JSON.stringify({
+          message: '既に評価済みです。',
+        }),
+        {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          },
+        },
+      )
+    }
+
     const newRating = new RatingsModel({
       addedBy: body.addedBy,
       rating: body.rating,
+      project: body.project,
     })
 
     await newRating.save()
@@ -35,7 +61,7 @@ export async function POST(req: Request) {
     }
 
     // 評価IDをプロジェクトに追加
-    project.rating.push(newRating as unknown as mongoose.Schema.Types.ObjectId)
+    project.rating.push(newRating._id)
     await project.save()
 
     // 成功レスポンス
@@ -101,6 +127,7 @@ export async function GET(req: Request) {
         language: project.language,
         link: project.link,
         duration: project.duration,
+        ratings: project.rating,
         averageRating: averageRating.toFixed(1),
       }
     })
