@@ -7,6 +7,7 @@ import ProjectCard from './components/ProjectCard'
 import RatingModalCardProps from './components/RatingModalCard'
 
 const Page = () => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [projects, setProjects] = useState<any[]>([])
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -24,7 +25,7 @@ const Page = () => {
       }
 
       try {
-        const res = await fetch('/api/project', {
+        const res = await fetch(`${apiUrl}/api/project`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -48,7 +49,7 @@ const Page = () => {
     }
 
     fetchProjects()
-  }, [])
+  }, [apiUrl])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleOpenModal = (project: any) => {

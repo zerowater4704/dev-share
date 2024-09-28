@@ -14,6 +14,7 @@ const CommentModalCard: React.FC<CommentModalProps> = ({
   projectId,
   updatedProject,
 }) => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
   const [comment, setComment] = useState('')
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [comments, setComments] = useState<any[]>([])
@@ -22,7 +23,7 @@ const CommentModalCard: React.FC<CommentModalProps> = ({
     const fetchProjectData = async () => {
       if (!projectId || !isOpen) return
       try {
-        const res = await fetch(`/api/comments?project=${projectId}`)
+        const res = await fetch(`${apiUrl}/api/comments?project=${projectId}`)
         const data = await res.json()
 
         if (!res.ok) {
@@ -37,7 +38,7 @@ const CommentModalCard: React.FC<CommentModalProps> = ({
     }
 
     fetchProjectData()
-  }, [isOpen, projectId])
+  }, [apiUrl, isOpen, projectId])
 
   const handleSubmitComment = async (comment: string) => {
     if (!comment) return

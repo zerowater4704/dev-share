@@ -1,22 +1,23 @@
 import CardList from './componets/CardList' // パスのスペル修正
 
 const page = async () => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
   const getDatas = async () => {
     try {
-      const userResponse = await fetch('/api/users', {
+      const userResponse = await fetch(`${apiUrl}/api/users`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        cache: 'no-store',
+        next: { revalidate: 10 },
       })
 
-      const projectResponse = await fetch('/api/projects', {
+      const projectResponse = await fetch(`${apiUrl}/api/projects`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        cache: 'no-store',
+        next: { revalidate: 10 },
       })
 
       if (!userResponse.ok || !projectResponse.ok) {

@@ -1,3 +1,4 @@
+'use server'
 import { CommentsModel } from '@/lib/mongoDB/models/comments'
 import { ProjectModel } from '@/lib/mongoDB/models/projects'
 import connectDB from '@/lib/mongoDB/mongoDB'

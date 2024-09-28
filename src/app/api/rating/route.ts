@@ -1,3 +1,4 @@
+'use server'
 import { verifyToken } from '@/lib/jwt'
 import { ProjectModel } from '@/lib/mongoDB/models/projects'
 import { RatingsModel } from '@/lib/mongoDB/models/ratings'

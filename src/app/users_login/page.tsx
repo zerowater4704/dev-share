@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './Login.module.css'
 
 const Login = () => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
@@ -21,7 +22,7 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const res = await fetch('/api/login', {
+    const res = await fetch(`${apiUrl}/api/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -3,8 +3,7 @@
 import { useRouter } from 'next/navigation' // App Routerでのナビゲーション用
 
 const useAuth = () => {
-  // const [isLoading, setIsLoading] = useState(true);
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
   const router = useRouter()
 
   const checkToken = async () => {
@@ -16,7 +15,7 @@ const useAuth = () => {
     }
 
     try {
-      const res = await fetch('/api/verify-token', {
+      const res = await fetch(`${apiUrl}/api/verify-token`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

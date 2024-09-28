@@ -16,6 +16,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   onOpenRatingModal,
   onDelete,
 }) => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
   const [averageRating, setAverageRating] = useState<number | null>(null)
   const [userRating, setUserRating] = useState<number | null>(null)
   const [isRatingFetched, setIsRatingFetched] = useState(false)
@@ -30,7 +31,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       }
 
       try {
-        const res = await fetch(`/api/rating?project=${project._id}`, {
+        const res = await fetch(`${apiUrl}/api/rating?project=${project._id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +67,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       }
     }
     fetchRating()
-  }, [project._id])
+  }, [apiUrl, project._id])
 
   return (
     <div className="rounded border bg-white p-4 shadow">
