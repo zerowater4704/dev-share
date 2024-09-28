@@ -21,7 +21,7 @@ const Header = () => {
         <div className="flex space-x-4">
           <Link
             href="/search_page"
-            className="rounded-md border border-gray-300 px-4 py-2 text-white transition duration-300 transform hover:bg-purple-600 hover:scale-105"
+            className="rounded-md border border-gray-300 px-4 py-2 text-white transition duration-300 hover:scale-105 hover:bg-purple-600"
           >
             検索アイコン
           </Link>
@@ -32,7 +32,7 @@ const Header = () => {
       <nav className="space-x-4 bg-purple-700 p-4">
         <Link
           href="/"
-          className={`rounded-md px-2 py-1 text-white transition duration-300 transform ${
+          className={`rounded-md px-2 py-1 text-white transition duration-300${
             isHomeClicked ? 'scale-110' : 'hover:scale-105'
           } hover:bg-purple-600 hover:text-purple-300`} // 拡大エフェクト
           onClick={handleHomeClick} // クリック時にアクションを追加
@@ -41,20 +41,20 @@ const Header = () => {
         </Link>
         <Link
           href="/projects_page"
-          className="rounded-md px-2 py-1 text-white transition duration-300 transform hover:bg-purple-600 hover:scale-105 hover:text-purple-300"
+          className="rounded-md px-2 py-1 text-white transition duration-300 hover:scale-105 hover:bg-purple-600 hover:text-purple-300"
         >
           My Products
         </Link>
         <Link
           href="#"
-          className="rounded-md px-2 py-1 text-white transition duration-300 transform hover:bg-purple-600 hover:scale-105 hover:text-purple-300"
+          className="rounded-md px-2 py-1 text-white transition duration-300 hover:scale-105 hover:bg-purple-600 hover:text-purple-300"
         >
           お気に入り
         </Link>
         {/* 新たに「すべてのプロジェクト」ボタンを追加 */}
         <Link
           href="/projects"
-          className="rounded-md px-2 py-1 text-white transition duration-300 transform hover:bg-purple-600 hover:scale-105 hover:text-purple-300"
+          className="rounded-md px-2 py-1 text-white transition duration-300 hover:scale-105 hover:bg-purple-600 hover:text-purple-300"
         >
           すべてのプロジェクト
         </Link>

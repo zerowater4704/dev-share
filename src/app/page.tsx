@@ -1,11 +1,9 @@
 import CardList from './componets/CardList' // パスのスペル修正
 
 const page = async () => {
-  const apiurl = 'http://localhost:3000'
-
   const getDatas = async () => {
     try {
-      const userResponse = await fetch(`${apiurl}/api/users`, {
+      const userResponse = await fetch('/api/users', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -13,7 +11,7 @@ const page = async () => {
         cache: 'no-store',
       })
 
-      const projectResponse = await fetch(`${apiurl}/api/projects`, {
+      const projectResponse = await fetch('/api/projects', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

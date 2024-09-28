@@ -46,7 +46,7 @@ const Login = () => {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-6 relative bg-white">
+    <div className="relative flex min-h-screen items-center justify-center bg-white p-6">
       {' '}
       {/* 背景を白に変更 */}
       {/* {showImage && (

@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react'
 import DeleteButton from './DeleteButton'
 
 interface ProjectCardProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   project: any
   onOpenModal: (project: any) => void
   onOpenRatingModal: (project: any) => void
@@ -43,6 +45,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           return
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const projectData = data.projects.find((proj: any) => proj._id === project._id)
         console.log('ProjectCard API response:', projectData)
 
@@ -51,7 +54,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
           // 各プロジェクトの評価を確認し、ユーザーの評価があるか確認
           const userRatingData = Array.isArray(projectData.ratings)
-            ? projectData.ratings.find((rating: any) => rating.addedBy === userId)
+            ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              projectData.ratings.find((rating: any) => rating.addedBy === userId)
             : null
           setUserRating(userRatingData ? userRatingData.rating : null)
         }
@@ -65,11 +69,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   }, [project._id])
 
   return (
-    <div className="border rounded p-4 bg-white shadow">
-      <div className="flex justify-between items-start">
+    <div className="rounded border bg-white p-4 shadow">
+      <div className="flex items-start justify-between">
         {/* 左側の情報 */}
         <div>
-          <div className="font-bold text-lg">{project.title}</div>
+          <div className="text-lg font-bold">{project.title}</div>
           <div className="mt-2">開発言語: {project.language.join(', ')}</div>
           <div className="mt-2">開発期間: {project.duration}</div>
           <div className="mt-2">
@@ -82,7 +86,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
         <div className="text-right">
           <div className="mt-4">
-            <div className="flex justify-end items-end">
+            <div className="flex items-end justify-end">
               <span
                 className={`text-2xl ${userRating !== null ? 'text-yellow-500' : 'text-gray-300'}`}
                 onClick={
@@ -106,7 +110,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
           <div className="mt-4">
             <button
-              className="bg-gray-200 p-2 rounded"
+              className="rounded bg-gray-200 p-2"
               onClick={() => onOpenModal(project)} // Open modal on click
             >
               {project.comments.length > 0

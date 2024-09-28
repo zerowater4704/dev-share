@@ -3,7 +3,7 @@ import { CommentsModel } from '@/lib/mongoDB/models/comments'
 import { ProjectModel } from '@/lib/mongoDB/models/projects'
 import { RatingsModel } from '@/lib/mongoDB/models/ratings'
 import connectDB from '@/lib/mongoDB/mongoDB'
-import { JwtPayload } from 'jsonwebtoken'
+import type { JwtPayload } from 'jsonwebtoken'
 
 export async function GET(req: Request) {
   await connectDB()

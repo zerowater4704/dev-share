@@ -4,6 +4,7 @@ interface CommentModalProps {
   isOpen: boolean
   onClose: () => void
   projectId: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updatedProject: (updatedProject: any) => void
 }
 
@@ -14,6 +15,7 @@ const CommentModalCard: React.FC<CommentModalProps> = ({
   updatedProject,
 }) => {
   const [comment, setComment] = useState('')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [comments, setComments] = useState<any[]>([])
 
   useEffect(() => {
@@ -53,7 +55,7 @@ const CommentModalCard: React.FC<CommentModalProps> = ({
         body: JSON.stringify({
           addedBy: userId, // ユーザーIDは実際の認証から取得する必要があります
           project: projectId,
-          comment: comment,
+          comment,
         }),
       })
 
@@ -77,20 +79,21 @@ const CommentModalCard: React.FC<CommentModalProps> = ({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-4 rounded w-1/3">
-        <h2 className="text-xl font-bold mb-4">コメントを追加</h2>
+    // eslint-disable-next-line tailwindcss/migration-from-tailwind-2
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="w-1/3 rounded bg-white p-4">
+        <h2 className="mb-4 text-xl font-bold">コメントを追加</h2>
 
         <div className="mb-4">
           <h3 className="font-semibold">既存のコメント</h3>
-          <ul className="border p-2 max-h-40 overflow-y-auto">
+          <ul className="max-h-40 overflow-y-auto border p-2">
             {comments && comments.length > 0 ? (
               comments.map((commentObj, index) => {
                 // コメントオブジェクトをデバッグ出力
                 console.log(commentObj)
 
                 return (
-                  <li key={index} className="p-2 border-b">
+                  <li key={index} className="border-b p-2">
                     <strong>{commentObj.addedBy ? commentObj.addedBy.userName : '作成者'}:</strong>{' '}
                     {commentObj.comment}
                   </li>
@@ -103,18 +106,18 @@ const CommentModalCard: React.FC<CommentModalProps> = ({
         </div>
 
         <textarea
-          className="border w-full p-2 mb-4"
+          className="mb-4 w-full border p-2"
           rows={4}
           onChange={(e) => setComment(e.target.value)}
         />
         <div className="flex justify-end">
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+            className="mr-2 rounded bg-blue-500 px-4 py-2 text-white"
             onClick={() => handleSubmitComment(comment)}
           >
             追加
           </button>
-          <button className="bg-gray-300 px-4 py-2 rounded" onClick={onClose}>
+          <button className="rounded bg-gray-300 px-4 py-2" onClick={onClose}>
             キャンセル
           </button>
         </div>

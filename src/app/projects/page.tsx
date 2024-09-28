@@ -51,6 +51,7 @@ const ProjectsPage = () => {
       const data = await response.json()
       setProjects(data.projects)
       setFilteredProjects(data.projects) // 初期状態でフィルタリングされたプロジェクトを設定
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -92,17 +93,17 @@ const ProjectsPage = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">All Projects</h1>
+      <h1 className="mb-4 text-2xl font-bold">All Projects</h1>
 
-      <div className="flex mb-4">
+      <div className="mb-4 flex">
         <input
           type="text"
           placeholder="Search projects..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="border border-gray-300 p-2 rounded-md flex-grow mr-2"
+          className="mr-2 grow rounded-md border border-gray-300 p-2"
         />
-        <button onClick={handleSearch} className="bg-blue-500 text-white p-2 rounded-md">
+        <button onClick={handleSearch} className="rounded-md bg-blue-500 p-2 text-white">
           Search
         </button>
       </div>
@@ -110,7 +111,7 @@ const ProjectsPage = () => {
       {filteredProjects.length === 0 ? (
         <p>No projects found.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredProjects.map((project) => (
             <ProjectCard
               key={project._id}
@@ -119,6 +120,9 @@ const ProjectsPage = () => {
               onOpenRatingModal={(project) => {
                 // 評価モーダルを開く処理をここに実装
                 console.log('Open rating modal for', project)
+              }}
+              onDelete={function (id: string): void {
+                throw new Error('Function not implemented.')
               }}
             />
           ))}

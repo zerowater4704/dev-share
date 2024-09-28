@@ -2,7 +2,7 @@ import { verifyToken } from '@/lib/jwt'
 import { ProjectModel } from '@/lib/mongoDB/models/projects'
 import { RatingsModel } from '@/lib/mongoDB/models/ratings'
 import connectDB from '@/lib/mongoDB/mongoDB'
-import { JwtPayload } from 'jsonwebtoken'
+import type { JwtPayload } from 'jsonwebtoken'
 
 export async function POST(req: Request) {
   await connectDB()
@@ -118,7 +118,8 @@ export async function GET(req: Request) {
       const ratings = project.rating || []
       const averageRating =
         ratings.length > 0
-          ? ratings.reduce((sum: number, rating: any) => sum + rating.rating, 0) / ratings.length
+          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ratings.reduce((sum: number, rating: any) => sum + rating.rating, 0) / ratings.length
           : 0
 
       return {
