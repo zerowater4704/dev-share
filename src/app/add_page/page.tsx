@@ -141,10 +141,11 @@ const AddPage = () => {
             type="text"
             value={link}
             onChange={(e) => setLink(e.target.value)}
-            className="w-full rounded border p-2"
+            className="w-full rounded border p-2 text-blue-500" // ここにリンク用の色を追加
             placeholder="https://your-app-link.com"
           />
         </div>
+
         <button type="submit" className="mt-4 rounded bg-blue-500 px-4 py-2 text-white">
           追加
         </button>
