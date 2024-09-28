@@ -1,6 +1,7 @@
 import { verifyToken } from '@/lib/jwt'
 import { CommentsModel } from '@/lib/mongoDB/models/comments'
 import { ProjectModel } from '@/lib/mongoDB/models/projects'
+import { RatingsModel } from '@/lib/mongoDB/models/ratings'
 import connectDB from '@/lib/mongoDB/mongoDB'
 import { JwtPayload } from 'jsonwebtoken'
 
@@ -38,6 +39,7 @@ export async function GET(req: Request) {
         populate: { path: 'addedBy', select: 'userName' }, // コメントのaddedByをpopulate
       })
     const comments = await CommentsModel.find()
+    const ratings = await RatingsModel.find()
 
     if (!projects || projects.length === 0) {
       return new Response(JSON.stringify({ error: 'No projects found for this user' }), {
@@ -46,7 +48,7 @@ export async function GET(req: Request) {
       })
     }
 
-    return new Response(JSON.stringify({ projects, comments }), {
+    return new Response(JSON.stringify({ projects, comments, ratings }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })
