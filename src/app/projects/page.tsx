@@ -32,7 +32,7 @@ const ProjectsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState<string>('') // 検索用のステート
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects) // フィルタリングされたプロジェクトを管理
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects) // フィルタリングされたプロジェク
 
   const fetchProjects = async () => {
     try {
