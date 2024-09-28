@@ -99,7 +99,7 @@ const ProjectsPage = () => {
           type="text"
           placeholder="Search projects..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} // 入力値を管理
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="border border-gray-300 p-2 rounded-md flex-grow mr-2"
         />
         <button onClick={handleSearch} className="bg-blue-500 text-white p-2 rounded-md">
