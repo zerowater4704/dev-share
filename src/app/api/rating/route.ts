@@ -1,8 +1,9 @@
+import { verifyToken } from '@/lib/jwt'
 import { ProjectModel } from '@/lib/mongoDB/models/projects'
 import { RatingsModel } from '@/lib/mongoDB/models/ratings'
-
 import connectDB from '@/lib/mongoDB/mongoDB'
-import type mongoose from 'mongoose'
+import { JwtPayload } from 'jsonwebtoken'
+import mongoose from 'mongoose'
 
 export async function POST(req: Request) {
   await connectDB()
@@ -22,6 +23,7 @@ export async function POST(req: Request) {
 
     // プロジェクトが見つからない場合
     if (!project) {
+      console.error('プロジェクトが見つかりません:', body.project)
       return new Response(JSON.stringify({ message: 'プロジェクトが見つかりません。' }), {
         status: 404,
         headers: {
@@ -58,5 +60,60 @@ export async function POST(req: Request) {
         },
       },
     )
+  }
+}
+
+export async function GET(req: Request) {
+  await connectDB()
+
+  const authHeader = req.headers.get('Authorization')
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
+  const token = authHeader.split(' ')[1]
+  try {
+    const decoded = verifyToken(token)
+    if (!decoded) {
+      return new Response(JSON.stringify({ error: 'Invalid token' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    const userId = (decoded as JwtPayload).id
+
+    const projects = await ProjectModel.find({ addedBy: userId }).populate('rating')
+
+    const projectData = projects.map((project) => {
+      const ratings = project.rating || []
+      const averageRating =
+        ratings.length > 0
+          ? ratings.reduce((sum: number, rating: any) => sum + rating.rating, 0) / ratings.length
+          : 0
+
+      return {
+        _id: project._id,
+        title: project.title,
+        language: project.language,
+        link: project.link,
+        duration: project.duration,
+        averageRating: averageRating.toFixed(1),
+      }
+    })
+
+    return new Response(JSON.stringify({ projects: projectData }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch (error) {
+    console.error('Error fetching projects:', error)
+    return new Response(JSON.stringify({ error: 'Server error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 }

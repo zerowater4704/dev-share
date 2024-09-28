@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface ProjectCardProps {
   project: any
@@ -7,6 +7,53 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenModal, onOpenRatingModal }) => {
+  const [averageRating, setAverageRating] = useState<number | null>(null)
+
+  useEffect(() => {
+    const fetchRating = async () => {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        console.error('トークンが見つかりません')
+        return
+      }
+
+      try {
+        const res = await fetch(`/api/rating?project=${project._id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        console.log('Response status:', res.status)
+
+        const data = await res.json()
+        if (!res.ok) {
+          console.error('Error fetching rating:', data.message)
+          return
+        }
+
+        const ratings = data?.ratings || []
+        console.log('Fetched ratings:', ratings)
+
+        if (ratings.length > 0) {
+          const totalRating = ratings.reduce(
+            (acc: number, rating: { rating: number }) => acc + rating.rating,
+            0,
+          )
+          const avg = totalRating / ratings.length
+          setAverageRating(avg)
+        } else {
+          setAverageRating(0)
+        }
+      } catch (error) {
+        console.error('Error fetching rating:', error)
+      }
+    }
+    fetchRating()
+  }, [project._id])
+
   return (
     <div className="border rounded p-4 bg-white shadow">
       <div className="flex justify-between items-start">
@@ -25,9 +72,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenModal, onOpenR
 
         <div className="text-right">
           <div className="mt-4">
-            <div className="flex justify-end">
+            <div className="flex justify-end items-center">
+              <span
+                className={`text-2xl mr-4 ${averageRating ? 'text-yellow-500' : 'text-gray-300'}`}
+              >
+                {averageRating ? averageRating.toFixed(2) : '0'}
+              </span>
               <button
-                className="bg-gray-200 p-2 rounded"
+                className=" p-2 rounded"
                 onClick={() => onOpenRatingModal(project)} // Open modal on click
               >
                 <span className={`text-2xl text-gray-300`}>★</span>

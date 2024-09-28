@@ -38,6 +38,7 @@ export async function GET(req: Request) {
         path: 'comments',
         populate: { path: 'addedBy', select: 'userName' }, // コメントのaddedByをpopulate
       })
+      .populate('rating')
     const comments = await CommentsModel.find()
     const ratings = await RatingsModel.find()
 

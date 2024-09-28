@@ -14,15 +14,36 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
   useEffect(() => {
     const fetchProjectData = async () => {
       if (!projectId || !isOpen) return
+
       try {
-        const res = await fetch(`/api/rating?project=${projectId}`)
+        const token = localStorage.getItem('token')
+        if (!token) {
+          console.error('トークンが見つかりません。ログインしてください。')
+          return
+        }
+
+        const res = await fetch(`/api/rating?project=${projectId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        if (!res.ok) {
+          const errorData = await res.json()
+          console.error('Error fetching rating:', errorData.message)
+          return
+        }
+
         const data = await res.json()
 
+        console.log('API response:', data)
         if (!res.ok) {
           console.error('Error fetching rating:', data.message)
         } else {
           console.log('Fetched rating:', data.rating)
-          setCurrentRating(data.rating) // コメントをセット
+          setCurrentRating(data.averageRating) // コメントをセット
         }
       } catch (error) {
         console.error('Error fetching rating:', error)
@@ -37,6 +58,12 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
 
     try {
       const token = localStorage.getItem('token')
+      const userId = localStorage.getItem('userId')
+
+      if (!token) {
+        console.error('トークンが見つかりません。ログインしてください。')
+        return
+      }
 
       const res = await fetch(`/api/rating?project=${projectId}`, {
         method: 'POST',
@@ -44,7 +71,11 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ rating }),
+        body: JSON.stringify({
+          addedBy: userId,
+          rating,
+          project: projectId,
+        }),
       })
 
       if (!res.ok) {
@@ -79,7 +110,7 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
                 type="radio"
                 name="rating-8"
                 className="mask mask-star-2 bg-orange-400 text-6xl"
-                onClick={() => setRating(star)}
+                onChange={() => setRating(star)}
                 checked={star === rating} // 選択された星をチェックする
               />
             ))}
