@@ -25,6 +25,7 @@ const languageOptions = [
 const AddPage = () => {
   const router = useRouter()
   const [title, setTitle] = useState('')
+  const [type, setType] = useState('') // アプリの種類を追加
   const [language, setLanguage] = useState<MultiValue<{ value: string; label: string }>>([])
   const [startDuration, setStartDuration] = useState<Date | null>(null)
   const [endDuration, setEndDuration] = useState<Date | null>(null)
@@ -32,6 +33,7 @@ const AddPage = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
   const [userName, setUserName] = useState<string | null>(null)
+  const [notes, setNotes] = useState('') // 工夫した点を記入する欄を追加
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId')
@@ -58,9 +60,11 @@ const AddPage = () => {
 
     const newProject = {
       title,
+      type, // アプリの種類を追加
       language: language.map((lang) => lang.value),
       duration: `${format(startDuration, 'yyyy-MM-dd')} から ${format(endDuration, 'yyyy-MM-dd')}`,
       link,
+      notes, // 工夫した点を追加
       addedBy: userId,
       addedByName: userName,
     }
@@ -104,6 +108,16 @@ const AddPage = () => {
           />
         </div>
         <div className="mt-4">
+          <label className="mb-1 block">アプリの種類:</label>
+          <input
+            type="text"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="w-full rounded border p-2"
+            placeholder="アプリの種類"
+          />
+        </div>
+        <div className="mt-4">
           <label className="mb-1 block">開発言語:</label>
           <Select
             isMulti
@@ -141,8 +155,18 @@ const AddPage = () => {
             type="text"
             value={link}
             onChange={(e) => setLink(e.target.value)}
-            className="w-full rounded border p-2 text-blue-500" // ここにリンク用の色を追加
+            className="w-full rounded border p-2 text-blue-500"
             placeholder="https://your-app-link.com"
+          />
+        </div>
+        <div className="mt-4">
+          <label className="mb-1 block">工夫した点:</label>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className="w-full rounded border p-2"
+            placeholder="200文字以内で記入"
+            maxLength={200}
           />
         </div>
 
