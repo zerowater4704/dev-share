@@ -26,7 +26,7 @@ type Comment = {
   }
 }
 
-export const selectOpetions = ['JavaScript', 'TypeScript', 'React', 'Next.js', 'Java', 'Ruby']
+const selectOpetions = ['JavaScript', 'TypeScript', 'React', 'Next.js', 'Java', 'Ruby']
 
 const ProjectsPage = () => {
   const [projects, setProjects] = useState<Project[]>([])
