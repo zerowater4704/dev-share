@@ -3,6 +3,7 @@ import type { ChangeEvent } from 'react'
 import { useEffect, useState } from 'react'
 import CommentModalCard from '../projects_page/components/CommentModalCard' // CommentModalCardをインポート
 import ProjectCard from '../projects_page/components/ProjectCard' // ProjectCardコンポーネントをインポート
+import RatingModalCard from '../projects_page/components/RatingModalCard' // RatingModalCardをインポート
 
 type Project = {
   _id: string
@@ -34,6 +35,7 @@ const ProjectsPage = () => {
   const [error, setError] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState<string>('') // 検索用のステート
   const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects) // フィルタリングされたプロジェク
 
@@ -75,6 +77,16 @@ const ProjectsPage = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false)
+    setSelectedProjectId(null)
+  }
+
+  const handleOpenRatingModal = (projectId: string) => {
+    setSelectedProjectId(projectId)
+    setIsRatingModalOpen(true) // 評価モーダルを開く
+  }
+
+  const handleCloseRatingModal = () => {
+    setIsRatingModalOpen(false)
     setSelectedProjectId(null)
   }
 
@@ -147,10 +159,7 @@ const ProjectsPage = () => {
               key={project._id}
               project={project}
               onOpenModal={() => handleOpenModal(project._id)} // モーダルを開く処理
-              onOpenRatingModal={(project) => {
-                // 評価モーダルを開く処理をここに実装
-                console.log('Open rating modal for', project)
-              }}
+              onOpenRatingModal={() => handleOpenRatingModal(project._id)}
               onDelete={function (id: string): void {
                 throw new Error('Function not implemented.')
               }}
@@ -167,6 +176,12 @@ const ProjectsPage = () => {
           // コメントが追加された後の処理を実装
           console.log('Updated project with new comment:', updatedComment)
         }}
+      />
+
+      <RatingModalCard
+        isOpen={isRatingModalOpen}
+        onClose={handleCloseRatingModal}
+        projectId={selectedProjectId!}
       />
     </div>
   )

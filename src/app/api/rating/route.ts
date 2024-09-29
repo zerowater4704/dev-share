@@ -3,7 +3,6 @@ import { verifyToken } from '@/lib/jwt'
 import { ProjectModel } from '@/lib/mongoDB/models/projects'
 import { RatingsModel } from '@/lib/mongoDB/models/ratings'
 import connectDB from '@/lib/mongoDB/mongoDB'
-import type { JwtPayload } from 'jsonwebtoken'
 
 export async function POST(req: Request) {
   await connectDB()
@@ -111,9 +110,9 @@ export async function GET(req: Request) {
       })
     }
 
-    const userId = (decoded as JwtPayload).id
+    // const userId = (decoded as JwtPayload).id
 
-    const projects = await ProjectModel.find({ addedBy: userId }).populate('rating')
+    const projects = await ProjectModel.find({}).populate('rating')
 
     const projectData = projects.map((project) => {
       const ratings = project.rating || []

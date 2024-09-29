@@ -86,7 +86,7 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
       }
 
       const responseData = await res.json()
-
+      console.log('Rating submitted successfully:', responseData)
       setCurrentRating(responseData.newRating)
     } catch (error) {
       console.error('Error submitting rating:', error)
@@ -97,7 +97,6 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
   if (!isOpen) return null
 
   return (
-    // eslint-disable-next-line tailwindcss/migration-from-tailwind-2
     <div className="fixed inset-0 flex h-screen w-screen items-center justify-center bg-black bg-opacity-50">
       <div className="w-1/3 rounded bg-white p-4">
         <div className="mb-4 flex justify-center">
@@ -125,10 +124,16 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
         </div>
 
         <div className="flex justify-center">
-          <button className="mr-2 rounded bg-gray-300 px-4 py-2" onClick={onClose}>
+          <button
+            className="mr-2 rounded bg-gray-300 hover:bg-gray-200 px-4 py-2"
+            onClick={onClose}
+          >
             キャンセル
           </button>
-          <button className="rounded bg-blue-500 px-4 py-2 text-white" onClick={handleSubmitRating}>
+          <button
+            className="rounded bg-purple-500 hover:bg-purple-600 px-4 py-2 text-white"
+            onClick={handleSubmitRating}
+          >
             送信
           </button>
         </div>
