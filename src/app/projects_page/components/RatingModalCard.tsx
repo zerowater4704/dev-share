@@ -86,7 +86,7 @@ const RatingModalCard: React.FC<RatingModalCardProps> = ({ isOpen, onClose, proj
       }
 
       const responseData = await res.json()
-
+      console.log('Rating submitted successfully:', responseData)
       setCurrentRating(responseData.newRating)
     } catch (error) {
       console.error('Error submitting rating:', error)
@@ -124,10 +124,16 @@ const RatingModalCard: React.FC<RatingModalCardProps> = ({ isOpen, onClose, proj
         </div>
 
         <div className="flex justify-center">
-          <button className="mr-2 rounded bg-gray-300 px-4 py-2" onClick={onClose}>
+          <button
+            className="mr-2 rounded bg-gray-300 hover:bg-gray-200 px-4 py-2"
+            onClick={onClose}
+          >
             キャンセル
           </button>
-          <button className="rounded bg-blue-500 px-4 py-2 text-white" onClick={handleSubmitRating}>
+          <button
+            className="rounded bg-purple-500 hover:bg-purple-600 px-4 py-2 text-white"
+            onClick={handleSubmitRating}
+          >
             送信
           </button>
         </div>
