@@ -100,7 +100,7 @@ const ProjectsPage = () => {
   const filterLanguage = (e: ChangeEvent<HTMLSelectElement>) => {
     const lowerCaseSearchTerm = e.target.value.toLocaleLowerCase()
     const result = projects.filter((project) => {
-      const joinLangs = project.language.join('' || '')
+      const joinLangs = project.language.join('')
       return joinLangs.toLowerCase().includes(lowerCaseSearchTerm)
     })
     setFilteredProjects(result)
