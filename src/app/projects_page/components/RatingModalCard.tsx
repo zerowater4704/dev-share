@@ -6,7 +6,7 @@ interface RatingModalCardProps {
   projectId: string
 }
 
-const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose, projectId }) => {
+const RatingModalCard: React.FC<RatingModalCardProps> = ({ isOpen, onClose, projectId }) => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
   const [rating, setRating] = useState<number>(0)
   const [currentRating, setCurrentRating] = useState<number | null>(null)
@@ -40,7 +40,7 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
         console.log('API response:', data.projects)
 
         if (data.projects && data.projects.length > 0) {
-          console.log('Fetched rating:', data.projects.averageRating) // ここで平均評価が見えるはず
+          console.log('Fetched rating:', data.projects.averageRating)
           setCurrentRating(data.projects.averageRating)
         } else {
           console.error('Rating data not found.')
@@ -97,7 +97,6 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
   if (!isOpen) return null
 
   return (
-    // eslint-disable-next-line tailwindcss/migration-from-tailwind-2
     <div className="fixed inset-0 flex h-screen w-screen items-center justify-center bg-black bg-opacity-50">
       <div className="w-1/3 rounded bg-white p-4">
         <div className="mb-4 flex justify-center">
@@ -118,7 +117,7 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
                 name="rating-8"
                 className="mask mask-star-2 bg-orange-400 text-6xl"
                 onChange={() => setRating(star)}
-                checked={rating === star} // 選択された星をチェックする
+                checked={rating === star}
               />
             ))}
           </div>
@@ -137,4 +136,4 @@ const RatingModalCardProps: React.FC<RatingModalCardProps> = ({ isOpen, onClose,
   )
 }
 
-export default RatingModalCardProps
+export default RatingModalCard
