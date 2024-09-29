@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 import CommentModalCard from '../projects_page/components/CommentModalCard' // CommentModalCardをインポート
 import ProjectCard from '../projects_page/components/ProjectCard' // ProjectCardコンポーネントをインポート
-import RatingModalCard from '../projects_page/components/RatingModalCard' // RatingModalCardをインポート
 
 type Project = {
   _id: string
@@ -31,10 +30,9 @@ const ProjectsPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false) // Rating Modalのstate
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState<string>('') // 検索用のステート
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]) // フィルタリングされたプロジェクト
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects) // フィルタリングされたプロジェク
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -56,6 +54,7 @@ const ProjectsPage = () => {
         const data = await response.json()
         setProjects(data.projects)
         setFilteredProjects(data.projects) // 初期状態でフィルタリングされたプロジェクトを設定
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setError(err.message)
       } finally {
@@ -65,17 +64,6 @@ const ProjectsPage = () => {
 
     fetchProjects()
   }, [])
-
-  // searchTermの変更に基づいて自動的に検索結果をフィルタリング
-  useEffect(() => {
-    const lowerCaseSearchTerm = searchTerm.toLowerCase() // 小文字に変換して比較
-    const filtered = projects.filter(
-      (project) =>
-        project.title.toLowerCase().includes(lowerCaseSearchTerm) || // タイトルに含まれる場合
-        project.language.some((lang) => lang.toLowerCase().includes(lowerCaseSearchTerm)), // 言語に含まれる場合
-    )
-    setFilteredProjects(filtered)
-  }, [searchTerm, projects])
 
   const handleOpenModal = (projectId: string) => {
     setSelectedProjectId(projectId)
@@ -87,40 +75,14 @@ const ProjectsPage = () => {
     setSelectedProjectId(null)
   }
 
-  const handleOpenRatingModal = (projectId: string) => {
-    setSelectedProjectId(projectId)
-    setIsRatingModalOpen(true)
-  }
-
-  const handleCloseRatingModal = () => {
-    setIsRatingModalOpen(false)
-    setSelectedProjectId(null)
-  }
-
-  const handleDeleteProject = async (projectId: string) => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL
-
-    try {
-      const response = await fetch(`${apiUrl}/api/projects/${projectId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // JWTトークンをヘッダーに追加
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error('プロジェクトを削除できませんでした')
-      }
-
-      // プロジェクト一覧から削除
-      setProjects((prevProjects) => prevProjects.filter((project) => project._id !== projectId))
-      setFilteredProjects((prevProjects) =>
-        prevProjects.filter((project) => project._id !== projectId),
-      )
-    } catch (err: any) {
-      setError(err.message)
-    }
+  const handleSearch = () => {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase() // 小文字に変換して比較
+    const filtered = projects.filter(
+      (project) =>
+        project.title.toLowerCase().includes(lowerCaseSearchTerm) || // タイトルに含まれる場合
+        project.language.some((lang) => lang.toLowerCase().includes(lowerCaseSearchTerm)), // 言語に含まれる場合
+    )
+    setFilteredProjects(filtered) // フィルタリングされたプロジェクトを更新
   }
 
   if (loading) {
@@ -143,6 +105,9 @@ const ProjectsPage = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="mr-2 grow rounded-md border border-gray-300 p-2"
         />
+        <button onClick={handleSearch} className="rounded-md bg-blue-500 p-2 text-white">
+          検索
+        </button>
       </div>
 
       {filteredProjects.length === 0 ? (
@@ -153,9 +118,14 @@ const ProjectsPage = () => {
             <ProjectCard
               key={project._id}
               project={project}
-              onOpenModal={() => handleOpenModal(project._id)} // コメントモーダルを開く処理
-              onOpenRatingModal={() => handleOpenRatingModal(project._id)} // 評価モーダルを開く処理
-              onDelete={() => handleDeleteProject(project._id)} // プロジェクトを削除する処理
+              onOpenModal={() => handleOpenModal(project._id)} // モーダルを開く処理
+              onOpenRatingModal={(project) => {
+                // 評価モーダルを開く処理をここに実装
+                console.log('Open rating modal for', project)
+              }}
+              onDelete={function (id: string): void {
+                throw new Error('Function not implemented.')
+              }}
             />
           ))}
         </div>
@@ -166,30 +136,8 @@ const ProjectsPage = () => {
         onClose={handleCloseModal}
         projectId={selectedProjectId!} // 必ずプロジェクトIDがあることを前提
         updatedProject={(updatedComment) => {
-          // コメントが追加された後の処理
-          setProjects((prevProjects) =>
-            prevProjects.map((project) =>
-              project._id === updatedComment.projectId
-                ? { ...project, comments: [...project.comments, updatedComment] }
-                : project,
-            ),
-          )
-        }}
-      />
-
-      <RatingModalCard
-        isOpen={isRatingModalOpen}
-        onClose={handleCloseRatingModal}
-        projectId={selectedProjectId!} // 評価対象のプロジェクトID
-        updateProject={(updatedRating) => {
-          // 評価が更新された後の処理
-          setProjects((prevProjects) =>
-            prevProjects.map((project) =>
-              project._id === updatedRating.projectId
-                ? { ...project, rating: updatedRating.newRating }
-                : project,
-            ),
-          )
+          // コメントが追加された後の処理を実装
+          console.log('Updated project with new comment:', updatedComment)
         }}
       />
     </div>
