@@ -1,38 +1,17 @@
 'use client'
 import Link from 'next/link'
 import type { Dispatch, SetStateAction } from 'react'
+import styles from './Card.module.css' // CSSモジュールをインポート
 
 const CardFront = ({
   user,
-  setFlip,
   setFlipCardId,
 }: {
-  user: UserType
-  setFlip: Dispatch<SetStateAction<boolean>>
+  user: UserType // UserType が user オブジェクトの型であることを確認
   setFlipCardId: Dispatch<SetStateAction<string | null>>
 }) => {
-  // const [imageURL, setImageURL] = useState<string | null>(null)
-
-  const flipToggle = (id: string) => {
-    setFlipCardId(id)
-  }
-
-  // useEffect(() => {
-  //   if (user.userImage instanceof File) {
-  //     const url = URL.createObjectURL(user.userImage)
-  //     setImageURL(url)
-
-  //     // クリーンアップ関数
-  //     return () => {
-  //       URL.revokeObjectURL(url)
-  //     }
-  //   } else {
-  //     setImageURL(null) // userImageが無い場合はnullを設定
-  //   }
-  // }, [user.userImage])
-
   return (
-    <div className="relative h-[350px] w-auto rounded-md bg-gray-200 p-3">
+    <div className={`relative h-[350px] w-auto rounded-md bg-gray-200 p-3 ${styles.cardFront}`}>
       <div className="flex w-full flex-col gap-3">
         <div className="flex gap-4">
           {user.userImage ? (
@@ -62,9 +41,7 @@ const CardFront = ({
           <li className="border-l-2 border-purple-700 pl-2">
             好きな技術：{user.languages.join(',')}
           </li>
-          <li className="border-l-2 border-purple-700 pl-2">
-            ポジション：{user.position.join(',')}
-          </li>
+          <li className="border-l-2 border-purple-700 pl-2">ポジション：{user.position}</li>
         </ul>
 
         <div className="absolute inset-x-0 bottom-3 mx-auto flex w-full gap-2 px-2">
@@ -74,12 +51,6 @@ const CardFront = ({
           >
             Projects
           </Link>
-          <button
-            className="w-1/2 rounded-md bg-purple-700 p-1 text-white"
-            onClick={() => flipToggle(user._id)}
-          >
-            Flip
-          </button>
         </div>
       </div>
     </div>
