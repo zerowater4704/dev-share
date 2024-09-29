@@ -15,9 +15,11 @@ const Page = () => {
   const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [currentProject, setCurrentProject] = useState<any | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchProjects = async () => {
+      setIsLoading(true)
       const token = localStorage.getItem('token')
       if (!token) {
         setErrorMessage('ログインしてください')
@@ -42,6 +44,7 @@ const Page = () => {
 
         const data = await res.json()
         setProjects(data.projects)
+        setIsLoading(false)
       } catch (error) {
         console.error(error)
         setErrorMessage('エラーが発生しました')
@@ -135,17 +138,27 @@ const Page = () => {
           </Link>
         </div>
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={index}
-              project={project}
-              onOpenModal={handleOpenModal}
-              onOpenRatingModal={handleOpenRatingModal}
-              onDelete={handleDeleteProject}
-            />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="w-68 flex h-[175px] animate-pulse flex-col gap-5 rounded-sm bg-gray-200 p-5">
+              <div className="h-10 w-28 rounded-full bg-gray-300 "></div>
+              <div className="h-36 w-2/3 rounded-sm bg-gray-300 "></div>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {projects.map((project, index) => (
+              <ProjectCard
+                key={index}
+                project={project}
+                onOpenModal={handleOpenModal}
+                onOpenRatingModal={handleOpenRatingModal}
+                onDelete={handleDeleteProject}
+              />
+            ))}
+          </div>
+        )}
+
         <div className="mt-4 flex justify-between">
           <button className="rounded bg-gray-200 px-4 py-2">Previous</button>
           <button className="rounded bg-gray-200 px-4 py-2">Next</button>

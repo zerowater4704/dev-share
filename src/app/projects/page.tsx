@@ -1,4 +1,5 @@
 'use client'
+import type { ChangeEvent } from 'react'
 import { useEffect, useState } from 'react'
 import CommentModalCard from '../projects_page/components/CommentModalCard' // CommentModalCardをインポート
 import ProjectCard from '../projects_page/components/ProjectCard' // ProjectCardコンポーネントをインポート
@@ -24,6 +25,8 @@ type Comment = {
     userName: string
   }
 }
+
+export const selectOpetions = ['JavaScript', 'TypeScript', 'React', 'Next.js', 'Java', 'Ruby']
 
 const ProjectsPage = () => {
   const [projects, setProjects] = useState<Project[]>([])
@@ -75,8 +78,9 @@ const ProjectsPage = () => {
     setSelectedProjectId(null)
   }
 
-  const handleSearch = () => {
-    const lowerCaseSearchTerm = searchTerm.toLowerCase() // 小文字に変換して比較
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    // const lowerCaseSearchTerm = searchTerm.toLowerCase() // 小文字に変換して比較
+    const lowerCaseSearchTerm = e.target.value.toLocaleLowerCase()
     const filtered = projects.filter(
       (project) =>
         project.title.toLowerCase().includes(lowerCaseSearchTerm) || // タイトルに含まれる場合
@@ -93,6 +97,16 @@ const ProjectsPage = () => {
     return <div>Error: {error}</div>
   }
 
+  const filterLanguage = (e: ChangeEvent<HTMLSelectElement>) => {
+    const lowerCaseSearchTerm = e.target.value.toLocaleLowerCase()
+    const result = projects.filter((project) => {
+      const joinLangs = project.language.join('' || '')
+      return joinLangs.toLowerCase().includes(lowerCaseSearchTerm)
+    })
+    setFilteredProjects(result)
+    console.log(result)
+  }
+
   return (
     <div className="p-4">
       <h1 className="mb-4 text-2xl font-bold">All Projects</h1>
@@ -101,13 +115,27 @@ const ProjectsPage = () => {
         <input
           type="text"
           placeholder="Search projects..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="mr-2 grow rounded-md border border-gray-300 p-2"
+          // value={searchTerm}
+          // onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => handleSearch(e)}
+          className="mr-2 w-8/12 grow rounded-md border border-gray-300 p-2"
         />
-        <button onClick={handleSearch} className="rounded-md bg-blue-500 p-2 text-white">
+        <select
+          className="select select-primary block w-4/12 max-w-xs "
+          onChange={(e) => filterLanguage(e)}
+        >
+          <option disabled selected className="text-bold">
+            使用技術
+          </option>
+          {selectOpetions.map((value, index) => (
+            <option key={index} value={value}>
+              <span>{value}</span>
+            </option>
+          ))}
+        </select>
+        {/* <button onClick={handleSearch} className="rounded-md bg-blue-500 p-2 text-white">
           Search
-        </button>
+        </button> */}
       </div>
 
       {filteredProjects.length === 0 ? (
